@@ -5,7 +5,6 @@ import com.deep.api.response.Response;
 import com.deep.api.response.Responses;
 import com.deep.domain.model.TestModel;
 import com.deep.domain.service.TestService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +21,7 @@ public class ExampleResource {
   private TestService testService;
 
   @RequestMapping("/")
-  String example() {
+  public String example() {
     return "Hello World!";
   }
 
@@ -38,7 +37,7 @@ public class ExampleResource {
 
   @RequestMapping("/getTest")
   public Response getTestModel() {
-    TestModel model = testService.getTestModel("1");
+    TestModel model = testService.getTestModel("2");
     Response response = Responses.successResponse();
     HashMap<String, Object> data = new HashMap<>();
     data.put("test", model);

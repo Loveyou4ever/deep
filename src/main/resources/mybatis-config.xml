@@ -9,5 +9,8 @@
     </typeAliases>
     <mappers>
         <mapper resource="mapper/TestMapper.xml"/>
+        <mapper resource="mapper/BreedingPlanMapper.xml"/>
+        <mapper resource="mapper/DiagnosisPlanMapper.xml"/>
+        <mapper resource="mapper/NutritionPlanMapper.xml"/>
     </mappers>
 </configuration>
