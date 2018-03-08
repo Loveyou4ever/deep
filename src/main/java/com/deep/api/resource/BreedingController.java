@@ -44,7 +44,7 @@ public class BreedingController {
                             @RequestParam("s_prenatalIT") String s_prenatalIT,
                             @RequestParam("s_cubT") String s_cubT
                             ) throws ParseException {
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
         Date breedingT =  formatter.parse(s_breedingT);
         Date gestationT =  formatter.parse(s_gestationT);
         Date prenatalIT =  formatter.parse(s_prenatalIT);
