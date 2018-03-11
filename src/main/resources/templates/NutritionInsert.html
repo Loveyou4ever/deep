@@ -6,20 +6,8 @@
 </head>
 <body>
 <a>逐条添加信息：</a>
-<form action="/nutritionPlan/addshow" method="get">
+<form action="/NutritionInsert/show" method="get">
     <table>
-        <tr>
-            <td><label>记录号（例如 20180222）</label></td>
-            <td><input type="text" id="id" name="id" /></td>
-        </tr>
-        <tr>
-            <td><label>创建时间</label></td>
-            <td><input type="text" id="s_gmtCreate" name="s_gmtCreate" /></td>
-        </tr>
-        <tr>
-            <td><label>修改时间</label></td>
-            <td><input type="text" id="s_gmtModified" name="s_gmtModified" /></td>
-        </tr>
         <tr>
             <td><label>工厂编号</label></td>
             <td><input type="text" id="factoryNum" name="factoryNum" /></td>
@@ -105,24 +93,8 @@
             <td><input type="text" id="operator" name="operator" /></td>
         </tr>
         <tr>
-            <td><label>技术审核</label></td>
-            <td><input type="text" id="professor" name="professor" /></td>
-        </tr>
-        <tr>
-            <td><label>监督员</label></td>
-            <td><input type="text" id="supervisor" name="supervisor" /></td>
-        </tr>
-        <tr>
             <td><label>备注信息</label></td>
             <td><input type="text" id="remark" name="remark" /></td>
-        </tr>
-        <tr>
-            <td><label>是否通过审核</label></td>
-            <td><input type="text" id="isPass" name="isPass" /></td>
-        </tr>
-        <tr>
-            <td><label>未通过审核原因</label></td>
-            <td><input type="text" id="upassReason" name="upassReason" /></td>
         </tr>
         <tr>
             <td><input type="submit" id="submit" value="录入"/></td>

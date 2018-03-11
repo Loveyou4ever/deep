@@ -25,7 +25,11 @@ public class DiagnosisPlanService {
         int drop = this.diagnosisPlanMapper.deleteByPrimaryKey(id);
         return drop;
     }
-    public int changePlan(DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs){
+    public int changePlanByProfessor(DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs){
+        int change = this.diagnosisPlanMapper.updateByPrimaryKeySelective(diagnosisPlanWithBLOBs);
+        return change;
+    }
+    public int changePlanBySupervisor(DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs){
         int change = this.diagnosisPlanMapper.updateByPrimaryKeySelective(diagnosisPlanWithBLOBs);
         return change;
     }

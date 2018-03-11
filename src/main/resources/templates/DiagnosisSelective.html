@@ -5,6 +5,7 @@
     <title>查找档案</title>
 </head>
 <body>
+<a>按照条件查找信息 ：</a>
 <form action="/DiagnosisSelective/show" method="get">
     <table>
         <tr>
@@ -14,6 +15,16 @@
         <tr>
             <td><label>工厂编号</label></td>
             <td><input type="text" id="factoryNum" name="factoryNum" /></td>
+        </tr>
+        <tr>
+            <td><label>诊疗实施时间1---诊疗实施时间2</label></td>
+            <td><input type="text" id="s_diagnosisT1" name="s_diagnosisT1" /></td>
+            <td><label>------</label></td>
+            <td><input type="text" id="s_diagnosisT2" name="s_diagnosisT2" /></td>
+        </tr>
+        <tr>
+            <td><label>栋号</label></td>
+            <td><input type="text" id="building" name="building" /></td>
         </tr>
         <tr>
             <td><label>商标耳牌号</label></td>

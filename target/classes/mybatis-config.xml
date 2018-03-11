@@ -12,5 +12,6 @@
         <mapper resource="mapper/BreedingPlanMapper.xml"/>
         <mapper resource="mapper/DiagnosisPlanMapper.xml"/>
         <mapper resource="mapper/NutritionPlanMapper.xml"/>
+        <mapper resource="mapper/NoticePlanMapper.xml"/>
     </mappers>
 </configuration>

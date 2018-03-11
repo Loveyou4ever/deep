@@ -3,16 +3,14 @@ package com.deep.domain.model;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * author: Created  By  Caojiawei
- * date: 2018/2/2  13:12
- */
 public class BreedingPlan implements Serializable {
     private Integer id;
 
     private Date gmtCreate;
 
     private Date gmtModified;
+
+    private Date gmtSupervised;
 
     private Long factoryNum;
 
@@ -48,9 +46,9 @@ public class BreedingPlan implements Serializable {
 
     private String upassReason;
 
-    private static final long serialVersionUID = 1L;
+    private Byte isPass1;
 
-    public BreedingPlan() {}
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -74,6 +72,14 @@ public class BreedingPlan implements Serializable {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Date getGmtSupervised() {
+        return gmtSupervised;
+    }
+
+    public void setGmtSupervised(Date gmtSupervised) {
+        this.gmtSupervised = gmtSupervised;
     }
 
     public Long getFactoryNum() {
@@ -212,4 +218,11 @@ public class BreedingPlan implements Serializable {
         this.upassReason = upassReason == null ? null : upassReason.trim();
     }
 
+    public Byte getIsPass1() {
+        return isPass1;
+    }
+
+    public void setIsPass1(Byte isPass1) {
+        this.isPass1 = isPass1;
+    }
 }

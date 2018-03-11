@@ -1,13 +1,8 @@
 package com.deep.domain.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class NutritionPlanWithBLOBs extends NutritionPlan implements Serializable {
-    private String building;
-
-    private String period;
-
     private String materialA;
 
     private String materialM;
@@ -28,8 +23,6 @@ public class NutritionPlanWithBLOBs extends NutritionPlan implements Serializabl
 
     private String roughageWO;
 
-    private String water;
-
     private String pickingM;
 
     private String pickingR;
@@ -37,43 +30,6 @@ public class NutritionPlanWithBLOBs extends NutritionPlan implements Serializabl
     private String pickingO;
 
     private static final long serialVersionUID = 1L;
-
-    public NutritionPlanWithBLOBs(){}
-
-    public NutritionPlanWithBLOBs(String building, String period, String materialA, String materialM, String materialO, String materialWM, String materialWO, String roughageP, String roughageD, String roughageWP, String roughageWD, String roughageWO, String water, String pickingM, String pickingR, String pickingO) {
-        this.building = building;
-        this.period = period;
-        this.materialA = materialA;
-        this.materialM = materialM;
-        this.materialO = materialO;
-        this.materialWM = materialWM;
-        this.materialWO = materialWO;
-        this.roughageP = roughageP;
-        this.roughageD = roughageD;
-        this.roughageWP = roughageWP;
-        this.roughageWD = roughageWD;
-        this.roughageWO = roughageWO;
-        this.water = water;
-        this.pickingM = pickingM;
-        this.pickingR = pickingR;
-        this.pickingO = pickingO;
-    }
-
-    public String getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(String building) {
-        this.building = building == null ? null : building.trim();
-    }
-
-    public String getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(String period) {
-        this.period = period == null ? null : period.trim();
-    }
 
     public String getMaterialA() {
         return materialA;
@@ -153,14 +109,6 @@ public class NutritionPlanWithBLOBs extends NutritionPlan implements Serializabl
 
     public void setRoughageWO(String roughageWO) {
         this.roughageWO = roughageWO == null ? null : roughageWO.trim();
-    }
-
-    public String getWater() {
-        return water;
-    }
-
-    public void setWater(String water) {
-        this.water = water == null ? null : water.trim();
     }
 
     public String getPickingM() {

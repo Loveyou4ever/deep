@@ -5,6 +5,7 @@ import com.deep.api.response.Responses;
 import com.deep.domain.model.BreedingPlan;
 import com.deep.domain.model.BreedingPlanExample;
 import com.deep.domain.service.BreedingPlanService;
+import org.apache.ibatis.type.TimeOnlyTypeHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,35 +51,44 @@ public class BreedingController {
         Date prenatalIT =  formatter.parse(s_prenatalIT);
         Date cubT =  formatter.parse(s_cubT);
 
-        insert.setId(insert.getId());
+        Byte zero = 0;
         insert.setGmtCreate(new Date());
-        insert.setGmtModified(new Date());
         insert.setFactoryNum(insert.getFactoryNum());
         insert.setBuilding(insert.getBuilding());
         insert.setmEtI(insert.getmEtI());
         insert.setmEtB(insert.getmEtB());
         insert.setfEtI(insert.getfEtI());
         insert.setfEtB(insert.getfEtB());
-        /*update.setBreedingT(update.getBreedingT());
-        update.setGestationT(update.getGestationT());
-        update.setPrenatalIT(update.getPrenatalIT());
-        update.setCubT(update.getCubT());*/
+        /*insert.setBreedingT(insert.getBreedingT());
+        insert.setGestationT(insert.getGestationT());
+        insert.setPrenatalIT(insert.getPrenatalIT());
+        insert.setCubT(insert.getCubT());*/
         insert.setBreedingT(breedingT);
         insert.setGestationT(gestationT);
         insert.setPrenatalIT(prenatalIT);
         insert.setCubT(cubT);
         insert.setQuantity(insert.getQuantity());
         insert.setOperator(insert.getOperator());
-        insert.setProfessor(insert.getProfessor());
-        insert.setSupervisor(insert.getSupervisor());
         insert.setRemark(insert.getRemark());
-        insert.setIsPass(insert.getIsPass());
-        insert.setUpassReason(insert.getUpassReason());
-
+        insert.setIsPass(zero);
+        insert.setIsPass1(zero);
         breedingPlanService.addPlan(insert);
+
+        BreedingPlanExample breedingPlanExample = new BreedingPlanExample();
+        BreedingPlanExample.Criteria criteria = breedingPlanExample.createCriteria();
+        criteria.andFactoryNumEqualTo(insert.getFactoryNum());
+        criteria.andBuildingEqualTo(insert.getBuilding());
+        criteria.andMEtIEqualTo(insert.getmEtI());
+        criteria.andMEtBEqualTo(insert.getmEtB());
+        criteria.andFEtIEqualTo(insert.getfEtI());
+        criteria.andFEtBEqualTo(insert.getfEtB());
+        criteria.andQuantityEqualTo(insert.getQuantity());
+        criteria.andOperatorEqualTo(insert.getOperator());
+
+        List<BreedingPlan> select = breedingPlanService.findPlanSelective(breedingPlanExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
-        data.put("breeding_Plan",insert);
+        data.put("breeding_plan",select);
         response.setData(data);
         return response;
     }
@@ -99,13 +109,13 @@ public class BreedingController {
         return response;
     }
 
-    @RequestMapping(value = "/BreedingUpdate",method = RequestMethod.GET)
-    public String changePlan(){
-        return "BreedingUpdate";
+    @RequestMapping(value = "/BreedingUpdateByProfessor",method = RequestMethod.GET)
+    public String changePlanByProfessor(){
+        return "BreedingUpdateByProfessor";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingUpdate/show",method = RequestMethod.GET)
-    public Response changePlan(@Valid BreedingPlan update,
+    @RequestMapping(value = "/BreedingUpdateByProfessor/show",method = RequestMethod.GET)
+    public Response changePlanByProfessor(@Valid BreedingPlan update,
                                @RequestParam("s_breedingT") String s_breedingT,
                                @RequestParam("s_gestationT") String s_gestationT,
                                @RequestParam("s_prenatalIT") String s_prenatalIT,
@@ -134,17 +144,37 @@ public class BreedingController {
         update.setPrenatalIT(prenatalIT);
         update.setCubT(cubT);
         update.setQuantity(update.getQuantity());
-        update.setOperator(update.getOperator());
         update.setProfessor(update.getProfessor());
-        update.setSupervisor(update.getSupervisor());
         update.setRemark(update.getRemark());
         update.setIsPass(update.getIsPass());
         update.setUpassReason(update.getUpassReason());
 
-        breedingPlanService.changePlan(update);
+        breedingPlanService.changePlanByProfessor(update);
+        BreedingPlan selectById = breedingPlanService.findPlanById(update.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
-        data.put("breeding_plan",update);
+        data.put("breeding_plan",selectById);
+        response.setData(data);
+        return response;
+    }
+
+    @RequestMapping(value = "/BreedingUpdateBySupervisor",method = RequestMethod.GET)
+    public String changePlanBySupervisor(){
+        return "BreedingUpdateBySupervisor";
+    }
+    @ResponseBody
+    @RequestMapping(value = "/BreedingUpdateBySupervisor/show",method = RequestMethod.GET)
+    public Response changePlanBySupervisor(@Valid BreedingPlan update) {
+        update.setId(update.getId());
+        update.setGmtSupervised(new Date());
+        update.setSupervisor(update.getSupervisor());
+        update.setIsPass1(update.getIsPass1());
+
+        breedingPlanService.changePlanBySupervisor(update);
+        BreedingPlan selectById = breedingPlanService.findPlanById(update.getId());
+        Response response = Responses.successResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("breeding_plan",selectById);
         response.setData(data);
         return response;
     }
@@ -228,18 +258,6 @@ public class BreedingController {
         if(cubT1 != null && cubT2 != null ){
             criteria.andCubTBetween(cubT1,cubT2);
         }
-//        if(breedingPlan.getBreedingT() != null && breedingPlan.getBreedingT().toString() !=""){
-//            criteria.andBreedingTEqualTo(breedingPlan.getBreedingT());
-//        }
-//        if(breedingPlan.getGestationT() != null && breedingPlan.getGestationT().toString() !=""){
-//            criteria.andGestationTEqualTo(breedingPlan.getGestationT());
-//        }
-//        if(breedingPlan.getPrenatalIT() != null && breedingPlan.getPrenatalIT().toString() !=""){
-//            criteria.andPrenatalITEqualTo(breedingPlan.getPrenatalIT());
-//        }
-//        if(breedingPlan.getCubT() != null && breedingPlan.getCubT().toString() !=""){
-//            criteria.andCubTEqualTo(breedingPlan.getCubT());
-//        }
         if(breedingPlan.getQuantity() != null && breedingPlan.getQuantity().toString() !=""){
             criteria.andQuantityEqualTo(breedingPlan.getQuantity());
         }

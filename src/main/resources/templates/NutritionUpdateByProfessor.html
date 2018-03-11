@@ -6,8 +6,12 @@
 </head>
 <body>
 <a>逐条添加信息：</a>
-<form action="/NutritionInsert/show" method="get">
+<form action="/NutritionUpdateByProfessor/show" method="get">
     <table>
+        <tr>
+            <td><label>记录号</label></td>
+            <td><input type="text" id="id" name="id" /></td>
+        </tr>
         <tr>
             <td><label>工厂编号</label></td>
             <td><input type="text" id="factoryNum" name="factoryNum" /></td>
@@ -89,12 +93,20 @@
             <td><input type="text" id="pickingO" name="pickingO" /></td>
         </tr>
         <tr>
-            <td><label>操作员</label></td>
-            <td><input type="text" id="operator" name="operator" /></td>
+            <td><label>技术审核</label></td>
+            <td><input type="text" id="professor" name="professor" /></td>
         </tr>
         <tr>
             <td><label>备注信息</label></td>
             <td><input type="text" id="remark" name="remark" /></td>
+        </tr>
+        <tr>
+            <td><label>是否通过审核</label></td>
+            <td><input type="text" id="isPass" name="isPass" /></td>
+        </tr>
+        <tr>
+            <td><label>未通过审核原因</label></td>
+            <td><input type="text" id="upassReason" name="upassReason" /></td>
         </tr>
         <tr>
             <td><input type="submit" id="submit" value="录入"/></td>

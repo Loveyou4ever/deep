@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-
 <mapper namespace="com.deep.infra.persistence.sql.mapper.BreedingPlanMapper" >
-  <resultMap id="BaseResultMap" type="com.deep.domain.model.BreedingPlan">
+  <resultMap id="BaseResultMap" type="com.deep.domain.model.BreedingPlan" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="gmt_supervised" property="gmtSupervised" jdbcType="TIMESTAMP" />
     <result column="factory_num" property="factoryNum" jdbcType="BIGINT" />
+    <result column="building" property="building" jdbcType="VARCHAR" />
     <result column="m_et_i" property="mEtI" jdbcType="VARCHAR" />
     <result column="m_et_b" property="mEtB" jdbcType="VARCHAR" />
     <result column="f_et_i" property="fEtI" jdbcType="VARCHAR" />
@@ -22,9 +23,7 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="is_pass" property="isPass" jdbcType="TINYINT" />
     <result column="upass_reason" property="upassReason" jdbcType="VARCHAR" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.deep.domain.model.BreedingPlan" extends="BaseResultMap" >
-    <result column="building" property="building" jdbcType="LONGVARCHAR" />
+    <result column="is_pass1" property="isPass1" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -85,29 +84,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, gmt_create, gmt_modified, factory_num, m_et_i, m_et_b, f_et_i, f_et_b, Breeding_t, 
-    gestation_t, Prenatal_i_t, cub_t, quantity, operator, professor, supervisor, remark, 
-    is_pass, upass_reason
+    id, gmt_create, gmt_modified, gmt_supervised, factory_num, building, m_et_i, m_et_b, 
+    f_et_i, f_et_b, Breeding_t, gestation_t, Prenatal_i_t, cub_t, quantity, operator, 
+    professor, supervisor, remark, is_pass, upass_reason, is_pass1
   </sql>
-  <sql id="Blob_Column_List" >
-    building
-  </sql>
-  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.deep.domain.model.BreedingPlanExample" >
-    select
-    <if test="distinct" >
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from breeding_plan
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null" >
-      order by ${orderByClause}
-    </if>
-  </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.deep.domain.model.BreedingPlanExample" >
     select
     <if test="distinct" >
@@ -122,11 +102,9 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from breeding_plan
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -142,19 +120,21 @@
   </delete>
   <insert id="insert" parameterType="com.deep.domain.model.BreedingPlan" >
     insert into breeding_plan (id, gmt_create, gmt_modified, 
-      factory_num, m_et_i, m_et_b, 
-      f_et_i, f_et_b, Breeding_t, 
-      gestation_t, Prenatal_i_t, cub_t, 
-      quantity, operator, professor, 
-      supervisor, remark, is_pass, 
-      upass_reason, building)
+      gmt_supervised, factory_num, building, 
+      m_et_i, m_et_b, f_et_i, f_et_b, 
+      Breeding_t, gestation_t, Prenatal_i_t, 
+      cub_t, quantity, operator, 
+      professor, supervisor, remark, 
+      is_pass, upass_reason, is_pass1
+      )
     values (#{id,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
-      #{factoryNum,jdbcType=BIGINT}, #{mEtI,jdbcType=VARCHAR}, #{mEtB,jdbcType=VARCHAR}, 
-      #{fEtI,jdbcType=VARCHAR}, #{fEtB,jdbcType=VARCHAR}, #{breedingT,jdbcType=TIMESTAMP}, 
-      #{gestationT,jdbcType=TIMESTAMP}, #{prenatalIT,jdbcType=TIMESTAMP}, #{cubT,jdbcType=TIMESTAMP}, 
-      #{quantity,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, #{professor,jdbcType=VARCHAR}, 
-      #{supervisor,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{isPass,jdbcType=TINYINT}, 
-      #{upassReason,jdbcType=VARCHAR}, #{building,jdbcType=LONGVARCHAR})
+      #{gmtSupervised,jdbcType=TIMESTAMP}, #{factoryNum,jdbcType=BIGINT}, #{building,jdbcType=VARCHAR}, 
+      #{mEtI,jdbcType=VARCHAR}, #{mEtB,jdbcType=VARCHAR}, #{fEtI,jdbcType=VARCHAR}, #{fEtB,jdbcType=VARCHAR}, 
+      #{breedingT,jdbcType=TIMESTAMP}, #{gestationT,jdbcType=TIMESTAMP}, #{prenatalIT,jdbcType=TIMESTAMP}, 
+      #{cubT,jdbcType=TIMESTAMP}, #{quantity,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, 
+      #{professor,jdbcType=VARCHAR}, #{supervisor,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{isPass,jdbcType=TINYINT}, #{upassReason,jdbcType=VARCHAR}, #{isPass1,jdbcType=TINYINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.deep.domain.model.BreedingPlan" >
     insert into breeding_plan
@@ -168,8 +148,14 @@
       <if test="gmtModified != null" >
         gmt_modified,
       </if>
+      <if test="gmtSupervised != null" >
+        gmt_supervised,
+      </if>
       <if test="factoryNum != null" >
         factory_num,
+      </if>
+      <if test="building != null" >
+        building,
       </if>
       <if test="mEtI != null" >
         m_et_i,
@@ -216,8 +202,8 @@
       <if test="upassReason != null" >
         upass_reason,
       </if>
-      <if test="building != null" >
-        building,
+      <if test="isPass1 != null" >
+        is_pass1,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -230,8 +216,14 @@
       <if test="gmtModified != null" >
         #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="gmtSupervised != null" >
+        #{gmtSupervised,jdbcType=TIMESTAMP},
+      </if>
       <if test="factoryNum != null" >
         #{factoryNum,jdbcType=BIGINT},
+      </if>
+      <if test="building != null" >
+        #{building,jdbcType=VARCHAR},
       </if>
       <if test="mEtI != null" >
         #{mEtI,jdbcType=VARCHAR},
@@ -278,8 +270,8 @@
       <if test="upassReason != null" >
         #{upassReason,jdbcType=VARCHAR},
       </if>
-      <if test="building != null" >
-        #{building,jdbcType=LONGVARCHAR},
+      <if test="isPass1 != null" >
+        #{isPass1,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -301,8 +293,14 @@
       <if test="record.gmtModified != null" >
         gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.gmtSupervised != null" >
+        gmt_supervised = #{record.gmtSupervised,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.factoryNum != null" >
         factory_num = #{record.factoryNum,jdbcType=BIGINT},
+      </if>
+      <if test="record.building != null" >
+        building = #{record.building,jdbcType=VARCHAR},
       </if>
       <if test="record.mEtI != null" >
         m_et_i = #{record.mEtI,jdbcType=VARCHAR},
@@ -349,20 +347,22 @@
       <if test="record.upassReason != null" >
         upass_reason = #{record.upassReason,jdbcType=VARCHAR},
       </if>
-      <if test="record.building != null" >
-        building = #{record.building,jdbcType=LONGVARCHAR},
+      <if test="record.isPass1 != null" >
+        is_pass1 = #{record.isPass1,jdbcType=TINYINT},
       </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map" >
+  <update id="updateByExample" parameterType="map" >
     update breeding_plan
     set id = #{record.id,jdbcType=INTEGER},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      gmt_supervised = #{record.gmtSupervised,jdbcType=TIMESTAMP},
       factory_num = #{record.factoryNum,jdbcType=BIGINT},
+      building = #{record.building,jdbcType=VARCHAR},
       m_et_i = #{record.mEtI,jdbcType=VARCHAR},
       m_et_b = #{record.mEtB,jdbcType=VARCHAR},
       f_et_i = #{record.fEtI,jdbcType=VARCHAR},
@@ -378,32 +378,7 @@
       remark = #{record.remark,jdbcType=VARCHAR},
       is_pass = #{record.isPass,jdbcType=TINYINT},
       upass_reason = #{record.upassReason,jdbcType=VARCHAR},
-      building = #{record.building,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map" >
-    update breeding_plan
-    set id = #{record.id,jdbcType=INTEGER},
-      gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
-      factory_num = #{record.factoryNum,jdbcType=BIGINT},
-      m_et_i = #{record.mEtI,jdbcType=VARCHAR},
-      m_et_b = #{record.mEtB,jdbcType=VARCHAR},
-      f_et_i = #{record.fEtI,jdbcType=VARCHAR},
-      f_et_b = #{record.fEtB,jdbcType=VARCHAR},
-      Breeding_t = #{record.breedingT,jdbcType=TIMESTAMP},
-      gestation_t = #{record.gestationT,jdbcType=TIMESTAMP},
-      Prenatal_i_t = #{record.prenatalIT,jdbcType=TIMESTAMP},
-      cub_t = #{record.cubT,jdbcType=TIMESTAMP},
-      quantity = #{record.quantity,jdbcType=INTEGER},
-      operator = #{record.operator,jdbcType=VARCHAR},
-      professor = #{record.professor,jdbcType=VARCHAR},
-      supervisor = #{record.supervisor,jdbcType=VARCHAR},
-      remark = #{record.remark,jdbcType=VARCHAR},
-      is_pass = #{record.isPass,jdbcType=TINYINT},
-      upass_reason = #{record.upassReason,jdbcType=VARCHAR}
+      is_pass1 = #{record.isPass1,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -412,14 +387,19 @@
     update breeding_plan
     <set >
       <if test="gmtCreate != null" >
-        /*Date型数据不能以字符串形式判空,只能以空值null进行判断*/
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
       <if test="gmtModified != null" >
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="gmtSupervised != null" >
+        gmt_supervised = #{gmtSupervised,jdbcType=TIMESTAMP},
+      </if>
       <if test="factoryNum != null and factoryNum != ''" >
         factory_num = #{factoryNum,jdbcType=BIGINT},
+      </if>
+      <if test="building != null and building != ''" >
+        building = #{building,jdbcType=VARCHAR},
       </if>
       <if test="mEtI != null and mEtI != ''" >
         m_et_i = #{mEtI,jdbcType=VARCHAR},
@@ -466,17 +446,19 @@
       <if test="upassReason != null and upassReason != ''" >
         upass_reason = #{upassReason,jdbcType=VARCHAR},
       </if>
-      <if test="building != null and building != ''" >
-        building = #{building,jdbcType=LONGVARCHAR},
+      <if test="isPass1 != null and isPass1 != ''" >
+        is_pass1 = #{isPass1,jdbcType=TINYINT},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.deep.domain.model.BreedingPlan" >
+  <update id="updateByPrimaryKey" parameterType="com.deep.domain.model.BreedingPlan" >
     update breeding_plan
     set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      gmt_supervised = #{gmtSupervised,jdbcType=TIMESTAMP},
       factory_num = #{factoryNum,jdbcType=BIGINT},
+      building = #{building,jdbcType=VARCHAR},
       m_et_i = #{mEtI,jdbcType=VARCHAR},
       m_et_b = #{mEtB,jdbcType=VARCHAR},
       f_et_i = #{fEtI,jdbcType=VARCHAR},
@@ -492,47 +474,9 @@
       remark = #{remark,jdbcType=VARCHAR},
       is_pass = #{isPass,jdbcType=TINYINT},
       upass_reason = #{upassReason,jdbcType=VARCHAR},
-      building = #{building,jdbcType=LONGVARCHAR}
+      is_pass1 = #{isPass1,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.deep.domain.model.BreedingPlan" >
-    update breeding_plan
-    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      factory_num = #{factoryNum,jdbcType=BIGINT},
-      m_et_i = #{mEtI,jdbcType=VARCHAR},
-      m_et_b = #{mEtB,jdbcType=VARCHAR},
-      f_et_i = #{fEtI,jdbcType=VARCHAR},
-      f_et_b = #{fEtB,jdbcType=VARCHAR},
-      Breeding_t = #{breedingT,jdbcType=TIMESTAMP},
-      gestation_t = #{gestationT,jdbcType=TIMESTAMP},
-      Prenatal_i_t = #{prenatalIT,jdbcType=TIMESTAMP},
-      cub_t = #{cubT,jdbcType=TIMESTAMP},
-      quantity = #{quantity,jdbcType=INTEGER},
-      operator = #{operator,jdbcType=VARCHAR},
-      professor = #{professor,jdbcType=VARCHAR},
-      supervisor = #{supervisor,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      is_pass = #{isPass,jdbcType=TINYINT},
-      upass_reason = #{upassReason,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <select resultMap="ResultMapWithBLOBs" parameterType="com.deep.domain.model.BreedingPlanExample" id="selectByExampleWithBLOBsWithRowbounds" >
-    select
-    <if test="distinct" >
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from breeding_plan
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null" >
-      order by ${orderByClause}
-    </if>
-  </select>
   <select resultMap="BaseResultMap" parameterType="com.deep.domain.model.BreedingPlanExample" id="selectByExampleWithRowbounds" >
     select
     <if test="distinct" >

@@ -18,10 +18,6 @@ public interface BreedingPlanMapper {
 
     int insertSelective(BreedingPlan record);
 
-    List<BreedingPlan> selectByExampleWithBLOBsWithRowbounds(BreedingPlanExample example, RowBounds rowBounds);
-
-    List<BreedingPlan> selectByExampleWithBLOBs(BreedingPlanExample example);
-
     List<BreedingPlan> selectByExampleWithRowbounds(BreedingPlanExample example, RowBounds rowBounds);
 
     List<BreedingPlan> selectByExample(BreedingPlanExample example);
@@ -30,14 +26,9 @@ public interface BreedingPlanMapper {
 
     int updateByExampleSelective(@Param("record") BreedingPlan record, @Param("example") BreedingPlanExample example);
 
-    int updateByExampleWithBLOBs(@Param("record") BreedingPlan record, @Param("example") BreedingPlanExample example);
-
     int updateByExample(@Param("record") BreedingPlan record, @Param("example") BreedingPlanExample example);
 
     int updateByPrimaryKeySelective(BreedingPlan record);
 
-    int updateByPrimaryKeyWithBLOBs(BreedingPlan record);
-
     int updateByPrimaryKey(BreedingPlan record);
-
 }

@@ -1,11 +1,8 @@
 package com.deep.domain.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class DiagnosisPlanWithBLOBs extends DiagnosisPlan implements Serializable {
-    private String building;
-
     private String diagnosisC;
 
     private String diagnosisM;
@@ -13,16 +10,6 @@ public class DiagnosisPlanWithBLOBs extends DiagnosisPlan implements Serializabl
     private String drugQ;
 
     private static final long serialVersionUID = 1L;
-
-    public DiagnosisPlanWithBLOBs(){}
-
-    public String getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(String building) {
-        this.building = building == null ? null : building.trim();
-    }
 
     public String getDiagnosisC() {
         return diagnosisC;

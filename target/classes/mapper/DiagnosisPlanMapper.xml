@@ -5,8 +5,10 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="gmt_supervised" property="gmtSupervised" jdbcType="TIMESTAMP" />
     <result column="factory_num" property="factoryNum" jdbcType="BIGINT" />
     <result column="diagnosis_t" property="diagnosisT" jdbcType="TIMESTAMP" />
+    <result column="building" property="building" jdbcType="VARCHAR" />
     <result column="et_b" property="etB" jdbcType="VARCHAR" />
     <result column="operator" property="operator" jdbcType="VARCHAR" />
     <result column="professor" property="professor" jdbcType="VARCHAR" />
@@ -14,9 +16,9 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="is_pass" property="isPass" jdbcType="TINYINT" />
     <result column="upass_reason" property="upassReason" jdbcType="VARCHAR" />
+    <result column="is_pass1" property="isPass1" jdbcType="TINYINT" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.deep.domain.model.DiagnosisPlanWithBLOBs" extends="BaseResultMap" >
-    <result column="building" property="building" jdbcType="LONGVARCHAR" />
     <result column="diagnosis_c" property="diagnosisC" jdbcType="LONGVARCHAR" />
     <result column="diagnosis_m" property="diagnosisM" jdbcType="LONGVARCHAR" />
     <result column="drug_q" property="drugQ" jdbcType="LONGVARCHAR" />
@@ -80,11 +82,11 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, gmt_create, gmt_modified, factory_num, diagnosis_t, et_b, operator, professor, 
-    supervisor, remark, is_pass, upass_reason
+    id, gmt_create, gmt_modified, gmt_supervised, factory_num, diagnosis_t, building, 
+    et_b, operator, professor, supervisor, remark, is_pass, upass_reason, is_pass1
   </sql>
   <sql id="Blob_Column_List" >
-    building, diagnosis_c, diagnosis_m, drug_q
+    diagnosis_c, diagnosis_m, drug_q
   </sql>
   <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.deep.domain.model.DiagnosisPlanExample" >
     select
@@ -117,7 +119,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
-    select
+    select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
@@ -136,17 +138,19 @@
   </delete>
   <insert id="insert" parameterType="com.deep.domain.model.DiagnosisPlanWithBLOBs" >
     insert into diagnosis_plan (id, gmt_create, gmt_modified, 
-      factory_num, diagnosis_t, et_b, 
-      operator, professor, supervisor, 
-      remark, is_pass, upass_reason, 
-      building, diagnosis_c, diagnosis_m, 
-      drug_q)
+      gmt_supervised, factory_num, diagnosis_t, 
+      building, et_b, operator, 
+      professor, supervisor, remark, 
+      is_pass, upass_reason, is_pass1, 
+      diagnosis_c, diagnosis_m, drug_q
+      )
     values (#{id,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
-      #{factoryNum,jdbcType=BIGINT}, #{diagnosisT,jdbcType=TIMESTAMP}, #{etB,jdbcType=VARCHAR}, 
-      #{operator,jdbcType=VARCHAR}, #{professor,jdbcType=VARCHAR}, #{supervisor,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{isPass,jdbcType=TINYINT}, #{upassReason,jdbcType=VARCHAR}, 
-      #{building,jdbcType=LONGVARCHAR}, #{diagnosisC,jdbcType=LONGVARCHAR}, #{diagnosisM,jdbcType=LONGVARCHAR}, 
-      #{drugQ,jdbcType=LONGVARCHAR})
+      #{gmtSupervised,jdbcType=TIMESTAMP}, #{factoryNum,jdbcType=BIGINT}, #{diagnosisT,jdbcType=TIMESTAMP}, 
+      #{building,jdbcType=VARCHAR}, #{etB,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, 
+      #{professor,jdbcType=VARCHAR}, #{supervisor,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{isPass,jdbcType=TINYINT}, #{upassReason,jdbcType=VARCHAR}, #{isPass1,jdbcType=TINYINT}, 
+      #{diagnosisC,jdbcType=LONGVARCHAR}, #{diagnosisM,jdbcType=LONGVARCHAR}, #{drugQ,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.deep.domain.model.DiagnosisPlanWithBLOBs" >
     insert into diagnosis_plan
@@ -160,11 +164,17 @@
       <if test="gmtModified != null" >
         gmt_modified,
       </if>
+      <if test="gmtSupervised != null" >
+        gmt_supervised,
+      </if>
       <if test="factoryNum != null" >
         factory_num,
       </if>
       <if test="diagnosisT != null" >
         diagnosis_t,
+      </if>
+      <if test="building != null" >
+        building,
       </if>
       <if test="etB != null" >
         et_b,
@@ -187,8 +197,8 @@
       <if test="upassReason != null" >
         upass_reason,
       </if>
-      <if test="building != null" >
-        building,
+      <if test="isPass1 != null" >
+        is_pass1,
       </if>
       <if test="diagnosisC != null" >
         diagnosis_c,
@@ -210,11 +220,17 @@
       <if test="gmtModified != null" >
         #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="gmtSupervised != null" >
+        #{gmtSupervised,jdbcType=TIMESTAMP},
+      </if>
       <if test="factoryNum != null" >
         #{factoryNum,jdbcType=BIGINT},
       </if>
       <if test="diagnosisT != null" >
         #{diagnosisT,jdbcType=TIMESTAMP},
+      </if>
+      <if test="building != null" >
+        #{building,jdbcType=VARCHAR},
       </if>
       <if test="etB != null" >
         #{etB,jdbcType=VARCHAR},
@@ -237,8 +253,8 @@
       <if test="upassReason != null" >
         #{upassReason,jdbcType=VARCHAR},
       </if>
-      <if test="building != null" >
-        #{building,jdbcType=LONGVARCHAR},
+      <if test="isPass1 != null" >
+        #{isPass1,jdbcType=TINYINT},
       </if>
       <if test="diagnosisC != null" >
         #{diagnosisC,jdbcType=LONGVARCHAR},
@@ -269,11 +285,17 @@
       <if test="record.gmtModified != null" >
         gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.gmtSupervised != null" >
+        gmt_supervised = #{record.gmtSupervised,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.factoryNum != null" >
         factory_num = #{record.factoryNum,jdbcType=BIGINT},
       </if>
       <if test="record.diagnosisT != null" >
         diagnosis_t = #{record.diagnosisT,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.building != null" >
+        building = #{record.building,jdbcType=VARCHAR},
       </if>
       <if test="record.etB != null" >
         et_b = #{record.etB,jdbcType=VARCHAR},
@@ -296,8 +318,8 @@
       <if test="record.upassReason != null" >
         upass_reason = #{record.upassReason,jdbcType=VARCHAR},
       </if>
-      <if test="record.building != null" >
-        building = #{record.building,jdbcType=LONGVARCHAR},
+      <if test="record.isPass1 != null" >
+        is_pass1 = #{record.isPass1,jdbcType=TINYINT},
       </if>
       <if test="record.diagnosisC != null" >
         diagnosis_c = #{record.diagnosisC,jdbcType=LONGVARCHAR},
@@ -318,8 +340,10 @@
     set id = #{record.id,jdbcType=INTEGER},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      gmt_supervised = #{record.gmtSupervised,jdbcType=TIMESTAMP},
       factory_num = #{record.factoryNum,jdbcType=BIGINT},
       diagnosis_t = #{record.diagnosisT,jdbcType=TIMESTAMP},
+      building = #{record.building,jdbcType=VARCHAR},
       et_b = #{record.etB,jdbcType=VARCHAR},
       operator = #{record.operator,jdbcType=VARCHAR},
       professor = #{record.professor,jdbcType=VARCHAR},
@@ -327,7 +351,7 @@
       remark = #{record.remark,jdbcType=VARCHAR},
       is_pass = #{record.isPass,jdbcType=TINYINT},
       upass_reason = #{record.upassReason,jdbcType=VARCHAR},
-      building = #{record.building,jdbcType=LONGVARCHAR},
+      is_pass1 = #{record.isPass1,jdbcType=TINYINT},
       diagnosis_c = #{record.diagnosisC,jdbcType=LONGVARCHAR},
       diagnosis_m = #{record.diagnosisM,jdbcType=LONGVARCHAR},
       drug_q = #{record.drugQ,jdbcType=LONGVARCHAR}
@@ -340,15 +364,18 @@
     set id = #{record.id,jdbcType=INTEGER},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      gmt_supervised = #{record.gmtSupervised,jdbcType=TIMESTAMP},
       factory_num = #{record.factoryNum,jdbcType=BIGINT},
       diagnosis_t = #{record.diagnosisT,jdbcType=TIMESTAMP},
+      building = #{record.building,jdbcType=VARCHAR},
       et_b = #{record.etB,jdbcType=VARCHAR},
       operator = #{record.operator,jdbcType=VARCHAR},
       professor = #{record.professor,jdbcType=VARCHAR},
       supervisor = #{record.supervisor,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR},
       is_pass = #{record.isPass,jdbcType=TINYINT},
-      upass_reason = #{record.upassReason,jdbcType=VARCHAR}
+      upass_reason = #{record.upassReason,jdbcType=VARCHAR},
+      is_pass1 = #{record.isPass1,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -362,45 +389,49 @@
       <if test="gmtModified != null" >
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
-      <if test="factoryNum != null and factoryNum !=''" >
+      <if test="gmtSupervised != null" >
+        gmt_supervised = #{gmtSupervised,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factoryNum != null and factoryNum != ''" >
         factory_num = #{factoryNum,jdbcType=BIGINT},
       </if>
       <if test="diagnosisT != null" >
-        /*diagnosisT类型为DateTime无法直接与字符串进行比较
-        当发生空字符串输入时，须返回用户输入界面并提供错误信息*/
         diagnosis_t = #{diagnosisT,jdbcType=TIMESTAMP},
       </if>
-      <if test="etB != null and etB !=''" >
+      <if test="building != null and building != ''" >
+        building = #{building,jdbcType=VARCHAR},
+      </if>
+      <if test="etB != null and etB != ''" >
         et_b = #{etB,jdbcType=VARCHAR},
       </if>
-      <if test="operator != null and operator !=''" >
+      <if test="operator != null and operator != ''" >
         operator = #{operator,jdbcType=VARCHAR},
       </if>
-      <if test="professor != null and professor !=''" >
+      <if test="professor != null and professor != ''" >
         professor = #{professor,jdbcType=VARCHAR},
       </if>
-      <if test="supervisor != null and supervisor !=''" >
+      <if test="supervisor != null and supervisor != ''" >
         supervisor = #{supervisor,jdbcType=VARCHAR},
       </if>
-      <if test="remark != null and remark !=''" >
+      <if test="remark != null and remark != ''" >
         remark = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="isPass != null and isPass !=''" >
+      <if test="isPass != null and isPass != ''" >
         is_pass = #{isPass,jdbcType=TINYINT},
       </if>
-      <if test="upassReason != null and upassReason !=''" >
+      <if test="upassReason != null and upassReason != ''" >
         upass_reason = #{upassReason,jdbcType=VARCHAR},
       </if>
-      <if test="building != null and building !=''"  >
-        building = #{building,jdbcType=LONGVARCHAR},
+      <if test="isPass1 != null and isPass1 != ''" >
+        is_pass1 = #{isPass1,jdbcType=TINYINT},
       </if>
-      <if test="diagnosisC != null and diagnosisC !=''" >
+      <if test="diagnosisC != null and diagnosisC != ''" >
         diagnosis_c = #{diagnosisC,jdbcType=LONGVARCHAR},
       </if>
-      <if test="diagnosisM != null and diagnosisM !=''" >
+      <if test="diagnosisM != null and diagnosisM != ''" >
         diagnosis_m = #{diagnosisM,jdbcType=LONGVARCHAR},
       </if>
-      <if test="drugQ != null and drugQ !=''" >
+      <if test="drugQ != null and drugQ != ''" >
         drug_q = #{drugQ,jdbcType=LONGVARCHAR},
       </if>
     </set>
@@ -408,11 +439,12 @@
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.deep.domain.model.DiagnosisPlanWithBLOBs" >
     update diagnosis_plan
-    set
-      gmt_create = #{gmt_create,jdbcType=TIMESTAMP},
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      gmt_supervised = #{gmtSupervised,jdbcType=TIMESTAMP},
       factory_num = #{factoryNum,jdbcType=BIGINT},
       diagnosis_t = #{diagnosisT,jdbcType=TIMESTAMP},
+      building = #{building,jdbcType=VARCHAR},
       et_b = #{etB,jdbcType=VARCHAR},
       operator = #{operator,jdbcType=VARCHAR},
       professor = #{professor,jdbcType=VARCHAR},
@@ -420,7 +452,7 @@
       remark = #{remark,jdbcType=VARCHAR},
       is_pass = #{isPass,jdbcType=TINYINT},
       upass_reason = #{upassReason,jdbcType=VARCHAR},
-      building = #{building,jdbcType=LONGVARCHAR},
+      is_pass1 = #{isPass1,jdbcType=TINYINT},
       diagnosis_c = #{diagnosisC,jdbcType=LONGVARCHAR},
       diagnosis_m = #{diagnosisM,jdbcType=LONGVARCHAR},
       drug_q = #{drugQ,jdbcType=LONGVARCHAR}
@@ -430,15 +462,18 @@
     update diagnosis_plan
     set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      gmt_supervised = #{gmtSupervised,jdbcType=TIMESTAMP},
       factory_num = #{factoryNum,jdbcType=BIGINT},
       diagnosis_t = #{diagnosisT,jdbcType=TIMESTAMP},
+      building = #{building,jdbcType=VARCHAR},
       et_b = #{etB,jdbcType=VARCHAR},
       operator = #{operator,jdbcType=VARCHAR},
       professor = #{professor,jdbcType=VARCHAR},
       supervisor = #{supervisor,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       is_pass = #{isPass,jdbcType=TINYINT},
-      upass_reason = #{upassReason,jdbcType=VARCHAR}
+      upass_reason = #{upassReason,jdbcType=VARCHAR},
+      is_pass1 = #{isPass1,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select resultMap="ResultMapWithBLOBs" parameterType="com.deep.domain.model.DiagnosisPlanExample" id="selectByExampleWithBLOBsWithRowbounds" >

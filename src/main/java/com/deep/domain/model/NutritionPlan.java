@@ -10,13 +10,21 @@ public class NutritionPlan implements Serializable {
 
     private Date gmtModified;
 
+    private Date gmtSupervised;
+
     private Long factoryNum;
+
+    private String building;
 
     private Date nutritionT;
 
     private Long quantity;
 
     private String average;
+
+    private String period;
+
+    private String water;
 
     private String operator;
 
@@ -30,25 +38,9 @@ public class NutritionPlan implements Serializable {
 
     private String upassReason;
 
+    private Byte isPass1;
+
     private static final long serialVersionUID = 1L;
-
-    public NutritionPlan() {}
-
-    public NutritionPlan(Integer id, Date gmtCreate, Date gmtModified, Long factoryNum, Date nutritionT, Long quantity, String average, String operator, String professor, String supervisor, String remark, Byte isPass, String upassReason) {
-        this.id = id;
-        this.gmtCreate = gmtCreate;
-        this.gmtModified = gmtModified;
-        this.factoryNum = factoryNum;
-        this.nutritionT = nutritionT;
-        this.quantity = quantity;
-        this.average = average;
-        this.operator = operator;
-        this.professor = professor;
-        this.supervisor = supervisor;
-        this.remark = remark;
-        this.isPass = isPass;
-        this.upassReason = upassReason;
-    }
 
     public Integer getId() {
         return id;
@@ -74,12 +66,28 @@ public class NutritionPlan implements Serializable {
         this.gmtModified = gmtModified;
     }
 
+    public Date getGmtSupervised() {
+        return gmtSupervised;
+    }
+
+    public void setGmtSupervised(Date gmtSupervised) {
+        this.gmtSupervised = gmtSupervised;
+    }
+
     public Long getFactoryNum() {
         return factoryNum;
     }
 
     public void setFactoryNum(Long factoryNum) {
         this.factoryNum = factoryNum;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building == null ? null : building.trim();
     }
 
     public Date getNutritionT() {
@@ -104,6 +112,22 @@ public class NutritionPlan implements Serializable {
 
     public void setAverage(String average) {
         this.average = average == null ? null : average.trim();
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period == null ? null : period.trim();
+    }
+
+    public String getWater() {
+        return water;
+    }
+
+    public void setWater(String water) {
+        this.water = water == null ? null : water.trim();
     }
 
     public String getOperator() {
@@ -152,5 +176,13 @@ public class NutritionPlan implements Serializable {
 
     public void setUpassReason(String upassReason) {
         this.upassReason = upassReason == null ? null : upassReason.trim();
+    }
+
+    public Byte getIsPass1() {
+        return isPass1;
+    }
+
+    public void setIsPass1(Byte isPass1) {
+        this.isPass1 = isPass1;
     }
 }

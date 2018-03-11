@@ -285,6 +285,66 @@ public class NutritionPlanExample {
             return (Criteria) this;
         }
 
+        public Criteria andGmtSupervisedIsNull() {
+            addCriterion("gmt_supervised is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedIsNotNull() {
+            addCriterion("gmt_supervised is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedEqualTo(Date value) {
+            addCriterion("gmt_supervised =", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedNotEqualTo(Date value) {
+            addCriterion("gmt_supervised <>", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedGreaterThan(Date value) {
+            addCriterion("gmt_supervised >", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedGreaterThanOrEqualTo(Date value) {
+            addCriterion("gmt_supervised >=", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedLessThan(Date value) {
+            addCriterion("gmt_supervised <", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedLessThanOrEqualTo(Date value) {
+            addCriterion("gmt_supervised <=", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedIn(List<Date> values) {
+            addCriterion("gmt_supervised in", values, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedNotIn(List<Date> values) {
+            addCriterion("gmt_supervised not in", values, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedBetween(Date value1, Date value2) {
+            addCriterion("gmt_supervised between", value1, value2, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedNotBetween(Date value1, Date value2) {
+            addCriterion("gmt_supervised not between", value1, value2, "gmtSupervised");
+            return (Criteria) this;
+        }
+
         public Criteria andFactoryNumIsNull() {
             addCriterion("factory_num is null");
             return (Criteria) this;
@@ -342,6 +402,76 @@ public class NutritionPlanExample {
 
         public Criteria andFactoryNumNotBetween(Long value1, Long value2) {
             addCriterion("factory_num not between", value1, value2, "factoryNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingIsNull() {
+            addCriterion("building is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingIsNotNull() {
+            addCriterion("building is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingEqualTo(String value) {
+            addCriterion("building =", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotEqualTo(String value) {
+            addCriterion("building <>", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingGreaterThan(String value) {
+            addCriterion("building >", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingGreaterThanOrEqualTo(String value) {
+            addCriterion("building >=", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLessThan(String value) {
+            addCriterion("building <", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLessThanOrEqualTo(String value) {
+            addCriterion("building <=", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLike(String value) {
+            addCriterion("building like", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotLike(String value) {
+            addCriterion("building not like", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingIn(List<String> values) {
+            addCriterion("building in", values, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotIn(List<String> values) {
+            addCriterion("building not in", values, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingBetween(String value1, String value2) {
+            addCriterion("building between", value1, value2, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotBetween(String value1, String value2) {
+            addCriterion("building not between", value1, value2, "building");
             return (Criteria) this;
         }
 
@@ -532,6 +662,146 @@ public class NutritionPlanExample {
 
         public Criteria andAverageNotBetween(String value1, String value2) {
             addCriterion("average not between", value1, value2, "average");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodIsNull() {
+            addCriterion("period is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodIsNotNull() {
+            addCriterion("period is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodEqualTo(String value) {
+            addCriterion("period =", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodNotEqualTo(String value) {
+            addCriterion("period <>", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodGreaterThan(String value) {
+            addCriterion("period >", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodGreaterThanOrEqualTo(String value) {
+            addCriterion("period >=", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodLessThan(String value) {
+            addCriterion("period <", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodLessThanOrEqualTo(String value) {
+            addCriterion("period <=", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodLike(String value) {
+            addCriterion("period like", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodNotLike(String value) {
+            addCriterion("period not like", value, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodIn(List<String> values) {
+            addCriterion("period in", values, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodNotIn(List<String> values) {
+            addCriterion("period not in", values, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodBetween(String value1, String value2) {
+            addCriterion("period between", value1, value2, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodNotBetween(String value1, String value2) {
+            addCriterion("period not between", value1, value2, "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterIsNull() {
+            addCriterion("water is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterIsNotNull() {
+            addCriterion("water is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterEqualTo(String value) {
+            addCriterion("water =", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterNotEqualTo(String value) {
+            addCriterion("water <>", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterGreaterThan(String value) {
+            addCriterion("water >", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterGreaterThanOrEqualTo(String value) {
+            addCriterion("water >=", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterLessThan(String value) {
+            addCriterion("water <", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterLessThanOrEqualTo(String value) {
+            addCriterion("water <=", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterLike(String value) {
+            addCriterion("water like", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterNotLike(String value) {
+            addCriterion("water not like", value, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterIn(List<String> values) {
+            addCriterion("water in", values, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterNotIn(List<String> values) {
+            addCriterion("water not in", values, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterBetween(String value1, String value2) {
+            addCriterion("water between", value1, value2, "water");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterNotBetween(String value1, String value2) {
+            addCriterion("water not between", value1, value2, "water");
             return (Criteria) this;
         }
 
@@ -945,8 +1215,83 @@ public class NutritionPlanExample {
             return (Criteria) this;
         }
 
+        public Criteria andIsPass1IsNull() {
+            addCriterion("is_pass1 is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1IsNotNull() {
+            addCriterion("is_pass1 is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1EqualTo(Byte value) {
+            addCriterion("is_pass1 =", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1NotEqualTo(Byte value) {
+            addCriterion("is_pass1 <>", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1GreaterThan(Byte value) {
+            addCriterion("is_pass1 >", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1GreaterThanOrEqualTo(Byte value) {
+            addCriterion("is_pass1 >=", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1LessThan(Byte value) {
+            addCriterion("is_pass1 <", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1LessThanOrEqualTo(Byte value) {
+            addCriterion("is_pass1 <=", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1In(List<Byte> values) {
+            addCriterion("is_pass1 in", values, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1NotIn(List<Byte> values) {
+            addCriterion("is_pass1 not in", values, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1Between(Byte value1, Byte value2) {
+            addCriterion("is_pass1 between", value1, value2, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1NotBetween(Byte value1, Byte value2) {
+            addCriterion("is_pass1 not between", value1, value2, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLikeInsensitive(String value) {
+            addCriterion("upper(building) like", value.toUpperCase(), "building");
+            return (Criteria) this;
+        }
+
         public Criteria andAverageLikeInsensitive(String value) {
             addCriterion("upper(average) like", value.toUpperCase(), "average");
+            return (Criteria) this;
+        }
+
+        public Criteria andPeriodLikeInsensitive(String value) {
+            addCriterion("upper(period) like", value.toUpperCase(), "period");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaterLikeInsensitive(String value) {
+            addCriterion("upper(water) like", value.toUpperCase(), "water");
             return (Criteria) this;
         }
 

@@ -10,9 +10,13 @@ public class DiagnosisPlan implements Serializable {
 
     private Date gmtModified;
 
+    private Date gmtSupervised;
+
     private Long factoryNum;
 
     private Date diagnosisT;
+
+    private String building;
 
     private String etB;
 
@@ -28,9 +32,9 @@ public class DiagnosisPlan implements Serializable {
 
     private String upassReason;
 
-    private static final long serialVersionUID = 1L;
+    private Byte isPass1;
 
-    public DiagnosisPlan(){}
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -56,6 +60,14 @@ public class DiagnosisPlan implements Serializable {
         this.gmtModified = gmtModified;
     }
 
+    public Date getGmtSupervised() {
+        return gmtSupervised;
+    }
+
+    public void setGmtSupervised(Date gmtSupervised) {
+        this.gmtSupervised = gmtSupervised;
+    }
+
     public Long getFactoryNum() {
         return factoryNum;
     }
@@ -70,6 +82,14 @@ public class DiagnosisPlan implements Serializable {
 
     public void setDiagnosisT(Date diagnosisT) {
         this.diagnosisT = diagnosisT;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building == null ? null : building.trim();
     }
 
     public String getEtB() {
@@ -126,5 +146,13 @@ public class DiagnosisPlan implements Serializable {
 
     public void setUpassReason(String upassReason) {
         this.upassReason = upassReason == null ? null : upassReason.trim();
+    }
+
+    public Byte getIsPass1() {
+        return isPass1;
+    }
+
+    public void setIsPass1(Byte isPass1) {
+        this.isPass1 = isPass1;
     }
 }

@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * author: Created  By  Caojiawei
- * date: 2018/2/2  13:12
- */
 public class BreedingPlanExample {
     protected String orderByClause;
 
@@ -289,6 +285,66 @@ public class BreedingPlanExample {
             return (Criteria) this;
         }
 
+        public Criteria andGmtSupervisedIsNull() {
+            addCriterion("gmt_supervised is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedIsNotNull() {
+            addCriterion("gmt_supervised is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedEqualTo(Date value) {
+            addCriterion("gmt_supervised =", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedNotEqualTo(Date value) {
+            addCriterion("gmt_supervised <>", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedGreaterThan(Date value) {
+            addCriterion("gmt_supervised >", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedGreaterThanOrEqualTo(Date value) {
+            addCriterion("gmt_supervised >=", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedLessThan(Date value) {
+            addCriterion("gmt_supervised <", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedLessThanOrEqualTo(Date value) {
+            addCriterion("gmt_supervised <=", value, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedIn(List<Date> values) {
+            addCriterion("gmt_supervised in", values, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedNotIn(List<Date> values) {
+            addCriterion("gmt_supervised not in", values, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedBetween(Date value1, Date value2) {
+            addCriterion("gmt_supervised between", value1, value2, "gmtSupervised");
+            return (Criteria) this;
+        }
+
+        public Criteria andGmtSupervisedNotBetween(Date value1, Date value2) {
+            addCriterion("gmt_supervised not between", value1, value2, "gmtSupervised");
+            return (Criteria) this;
+        }
+
         public Criteria andFactoryNumIsNull() {
             addCriterion("factory_num is null");
             return (Criteria) this;
@@ -346,6 +402,76 @@ public class BreedingPlanExample {
 
         public Criteria andFactoryNumNotBetween(Long value1, Long value2) {
             addCriterion("factory_num not between", value1, value2, "factoryNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingIsNull() {
+            addCriterion("building is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingIsNotNull() {
+            addCriterion("building is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingEqualTo(String value) {
+            addCriterion("building =", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotEqualTo(String value) {
+            addCriterion("building <>", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingGreaterThan(String value) {
+            addCriterion("building >", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingGreaterThanOrEqualTo(String value) {
+            addCriterion("building >=", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLessThan(String value) {
+            addCriterion("building <", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLessThanOrEqualTo(String value) {
+            addCriterion("building <=", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLike(String value) {
+            addCriterion("building like", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotLike(String value) {
+            addCriterion("building not like", value, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingIn(List<String> values) {
+            addCriterion("building in", values, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotIn(List<String> values) {
+            addCriterion("building not in", values, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingBetween(String value1, String value2) {
+            addCriterion("building between", value1, value2, "building");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingNotBetween(String value1, String value2) {
+            addCriterion("building not between", value1, value2, "building");
             return (Criteria) this;
         }
 
@@ -1336,6 +1462,71 @@ public class BreedingPlanExample {
 
         public Criteria andUpassReasonNotBetween(String value1, String value2) {
             addCriterion("upass_reason not between", value1, value2, "upassReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1IsNull() {
+            addCriterion("is_pass1 is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1IsNotNull() {
+            addCriterion("is_pass1 is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1EqualTo(Byte value) {
+            addCriterion("is_pass1 =", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1NotEqualTo(Byte value) {
+            addCriterion("is_pass1 <>", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1GreaterThan(Byte value) {
+            addCriterion("is_pass1 >", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1GreaterThanOrEqualTo(Byte value) {
+            addCriterion("is_pass1 >=", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1LessThan(Byte value) {
+            addCriterion("is_pass1 <", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1LessThanOrEqualTo(Byte value) {
+            addCriterion("is_pass1 <=", value, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1In(List<Byte> values) {
+            addCriterion("is_pass1 in", values, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1NotIn(List<Byte> values) {
+            addCriterion("is_pass1 not in", values, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1Between(Byte value1, Byte value2) {
+            addCriterion("is_pass1 between", value1, value2, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPass1NotBetween(Byte value1, Byte value2) {
+            addCriterion("is_pass1 not between", value1, value2, "isPass1");
+            return (Criteria) this;
+        }
+
+        public Criteria andBuildingLikeInsensitive(String value) {
+            addCriterion("upper(building) like", value.toUpperCase(), "building");
             return (Criteria) this;
         }
 
