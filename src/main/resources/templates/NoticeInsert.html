@@ -6,16 +6,8 @@
 </head>
 <body>
 <a>逐条添加信息：</a>
-<form action="/NoticeInsert/show" method="get">
+<form action="/NoticeInsert/show" method="post" enctype="multipart/form-data">
     <table>
-        <!--<tr>
-            <td><label>发布时间</label></td>
-            <td><input type="text" id="gmtCreate" name="gmtCreate" /></td>
-        </tr>
-        <tr>
-            <td><label>审核时间</label></td>
-            <td><input type="text" id="gmtModified" name="gmtModified" /></td>
-        </tr>-->
         <tr>
             <td><label>技术审核</label></td>
             <td><input type="text" id="professor" name="professor" /></td>
@@ -33,8 +25,10 @@
             <td><input type="text" id="content" name="content" /></td>
         </tr>
         <tr>
-            <td><input type="submit" id="submit" value="录入"/></td>
+            <td><label>图片</label></td>
+            <td><input type="file" name="file"/></td>
         </tr>
+        <td><input type="submit" id="submit" value="录入"/></td>
     </table>
 </form>
 </body>

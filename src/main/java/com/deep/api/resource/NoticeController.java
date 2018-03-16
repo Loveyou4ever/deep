@@ -6,20 +6,21 @@ import com.deep.domain.model.NoticePlan;
 import com.deep.domain.model.NoticePlanExample;
 import com.deep.domain.service.NoticePlanService;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * author: Created  By  Caojiawei
@@ -42,18 +43,34 @@ public class NoticeController {
         return "NoticeInsert";
     }
     @ResponseBody
-    @RequestMapping(value = "/NoticeInsert/show",method = RequestMethod.GET)
-    public Response addPlan(@Valid NoticePlan insert, BindingResult result){
-        if(result.hasErrors()){
-            List<ObjectError> ls = result.getAllErrors();
-            for (int i = 0; i < ls.size(); i++) {
-                System.out.println("error:"+ls.get(i));
-            }
-        }
+    @RequestMapping(value = "/NoticeInsert/show",method = RequestMethod.POST)
+    public Response addPlan(@Valid NoticePlan insert,
+                            @RequestParam("file") MultipartFile file,
+                            HttpServletRequest request){
+
         insert.setGmtCreate(new Date());
+        insert.setProfessor(insert.getProfessor());
         insert.setType(insert.getType());
         insert.setTitle(insert.getTitle());
         insert.setContent(insert.getContent());
+
+        String filename = file.getOriginalFilename();
+        String suffixname = filename.substring(filename.lastIndexOf("."));
+        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/"+insert.getProfessor()+"/";
+        /*解决中文问题，liunx下中文路径，图片显示问题
+        filename = UUID.randomUUID() + suffixname;
+        System.out.println(filepath+filename);*/
+
+        if(!file.isEmpty()){
+            try {
+                noticePlanService.uploadFile(file.getBytes(), filepath,filename );
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+
+        insert.setSuffixname(suffixname);
+        insert.setFilepath(filepath+filename);
         noticePlanService.addPlan(insert);
 
         NoticePlanExample insertExample = new NoticePlanExample();
@@ -140,11 +157,20 @@ public class NoticeController {
                                       @RequestParam ("s_gmtModified1") String s_gmtModified1,
                                       @RequestParam ("s_gmtModified2") String s_gmtModified2
     ) throws ParseException {
+        Date gmtCreate1 = null;
+        Date gmtCreate2 = null;
+        Date gmtModified1 = null;
+        Date gmtModified2 = null;
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
-        Date gmtCreate1 =  formatter.parse(s_gmtCreate1);
-        Date gmtCreate2 =  formatter.parse(s_gmtCreate2);
-        Date gmtModified1 =  formatter.parse(s_gmtModified1);
-        Date gmtModified2 =  formatter.parse(s_gmtModified2);
+        if (s_gmtCreate1 != "" && s_gmtCreate2 != ""){
+            gmtCreate1 =  formatter.parse(s_gmtCreate1);
+            gmtCreate2 =  formatter.parse(s_gmtCreate2);
+        }
+        if (s_gmtCreate1 != "" && s_gmtCreate2 != ""){
+            gmtModified1 =  formatter.parse(s_gmtModified1);
+            gmtModified2 =  formatter.parse(s_gmtModified2);
+        }
+
         NoticePlanExample noticePlanExample = new NoticePlanExample();
         NoticePlanExample.Criteria criteria = noticePlanExample.createCriteria();
 

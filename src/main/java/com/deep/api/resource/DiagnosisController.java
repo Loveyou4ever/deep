@@ -41,17 +41,18 @@ public class DiagnosisController {
     }
     @ResponseBody
     @RequestMapping(value = "/DiagnosisInsert/show",method = RequestMethod.GET)
-    public Response addPlan(@Valid DiagnosisPlanWithBLOBs insert,
-                            @RequestParam("s_diagnosisT") String s_diagnosisT
-    ) throws ParseException {
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
-        Date diagnosisT =  formatter.parse(s_diagnosisT);
+    public Response addPlan(@Valid DiagnosisPlanWithBLOBs insert
+                            ) throws ParseException {
+        Date diagnosisT = new Date();
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        if (insert.getDiagnosisT().toString() != ""){
+            diagnosisT =  formatter.parse(insert.getDiagnosisT().toString());
+        }
 
         Byte zero = 0;
         insert.setGmtCreate(new Date());
         insert.setFactoryNum(insert.getFactoryNum());
         insert.setBuilding(insert.getBuilding());
-//        insert.setDiagnosisT(insert.getDiagnosisT());
         insert.setDiagnosisT(diagnosisT);
         insert.setEtB(insert.getEtB());
         insert.setOperator(insert.getOperator());
@@ -103,16 +104,16 @@ public class DiagnosisController {
     }
     @ResponseBody
     @RequestMapping(value = "/DiagnosisUpdateByProfessor/show",method = RequestMethod.GET)
-    public Response changePlanByProfessor(@Valid DiagnosisPlanWithBLOBs update,
-                               @RequestParam("s_diagnosisT") String s_diagnosisT
-    ) throws ParseException {
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
-        Date diagnosisT =  formatter.parse(s_diagnosisT);
-
+    public Response changePlanByProfessor(@Valid DiagnosisPlanWithBLOBs update
+                                          ) throws ParseException {
+        Date diagnosisT = new Date();
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        if (update.getDiagnosisT().toString() != ""){
+            diagnosisT =  formatter.parse(update.getDiagnosisT().toString());
+        }
         update.setId(update.getId());
         update.setGmtModified(new Date());
         update.setFactoryNum(update.getFactoryNum());
-//        update.setDiagnosisT(update.getDiagnosisT());
         update.setDiagnosisT(diagnosisT);
         update.setBuilding(update.getBuilding());
         update.setEtB(update.getEtB());
@@ -182,9 +183,13 @@ public class DiagnosisController {
                                       @RequestParam ("s_diagnosisT1") String s_diagnosisT1,
                                       @RequestParam ("s_diagnosisT2") String s_diagnosisT2
                                       ) throws ParseException {
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
-        Date diagnosisT1 =  formatter.parse(s_diagnosisT1);
-        Date diagnosisT2 =  formatter.parse(s_diagnosisT2);
+        Date diagnosisT1 = null;
+        Date diagnosisT2 = null;
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        if (s_diagnosisT1 != "" && s_diagnosisT2 != ""){
+            diagnosisT1 =  formatter.parse(s_diagnosisT1);
+            diagnosisT2 =  formatter.parse(s_diagnosisT2);
+        }
 
         DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
         DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
@@ -213,8 +218,78 @@ public class DiagnosisController {
         if(diagnosisPlanWithBLOBs.getSupervisor() != null && diagnosisPlanWithBLOBs.getSupervisor() !=""){
             criteria.andSupervisorEqualTo(diagnosisPlanWithBLOBs.getSupervisor());
         }
+        if(diagnosisPlanWithBLOBs.getRemark() != null && diagnosisPlanWithBLOBs.getRemark() !=""){
+            criteria.andRemarkLike(diagnosisPlanWithBLOBs.getRemark());
+        }
         if(diagnosisPlanWithBLOBs.getIsPass() != null && diagnosisPlanWithBLOBs.getIsPass().toString() !=""){
             criteria.andIsPassEqualTo(diagnosisPlanWithBLOBs.getIsPass());
+        }
+        if(diagnosisPlanWithBLOBs.getUpassReason() != null && diagnosisPlanWithBLOBs.getUpassReason() !=""){
+            criteria.andUpassReasonLike(diagnosisPlanWithBLOBs.getUpassReason());
+        }
+        if(diagnosisPlanWithBLOBs.getIsPass1() != null && diagnosisPlanWithBLOBs.getIsPass1().toString() !=""){
+            criteria.andIsPassEqualTo(diagnosisPlanWithBLOBs.getIsPass1());
+        }
+        List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
+        Response response = Responses.successResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("diagnosis_plan",select);
+        response.setData(data);
+        return response;
+    }
+
+    //提供技术审核查询信息
+    @RequestMapping(value = "/DiagnosisSelectByProfessor",method = RequestMethod.GET)
+    public String findPlanByProfessor(){
+        return "DiagnosisSelectByProfessor";
+    }
+    @ResponseBody
+    @RequestMapping(value = "/DiagnosisSelectByProfessor/show",method = RequestMethod.GET)
+    public Response findPlanByProfessor(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs
+                                        ){
+        DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
+        DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
+
+        if(diagnosisPlanWithBLOBs.getId() != null && diagnosisPlanWithBLOBs.getId().toString() !=""){
+            criteria.andIdEqualTo(diagnosisPlanWithBLOBs.getId());
+        }
+        if(diagnosisPlanWithBLOBs.getProfessor() != null && diagnosisPlanWithBLOBs.getProfessor() !=""){
+            criteria.andProfessorEqualTo(diagnosisPlanWithBLOBs.getProfessor());
+        }
+        if(diagnosisPlanWithBLOBs.getIsPass() != null && diagnosisPlanWithBLOBs.getIsPass().toString() !=""){
+            criteria.andIsPassEqualTo(diagnosisPlanWithBLOBs.getIsPass());
+        }
+        if(diagnosisPlanWithBLOBs.getUpassReason() != null && diagnosisPlanWithBLOBs.getUpassReason() !=""){
+            criteria.andUpassReasonLike(diagnosisPlanWithBLOBs.getUpassReason());
+        }
+        List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
+        Response response = Responses.successResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("diagnosis_plan",select);
+        response.setData(data);
+        return response;
+    }
+
+    //提供监督者查询信息
+    @RequestMapping(value = "/DiagnosisSelectBySupervisor",method = RequestMethod.GET)
+    public String findPlanSelectBySupervisor(){
+        return "DiagnosisSelectBySupervisor";
+    }
+    @ResponseBody
+    @RequestMapping(value = "/DiagnosisSelectBySupervisor/show",method = RequestMethod.GET)
+    public Response findPlanSelectBySupervisor(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs
+                                               ){
+        DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
+        DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
+
+        if(diagnosisPlanWithBLOBs.getId() != null && diagnosisPlanWithBLOBs.getId().toString() !=""){
+            criteria.andIdEqualTo(diagnosisPlanWithBLOBs.getId());
+        }
+        if(diagnosisPlanWithBLOBs.getSupervisor() != null && diagnosisPlanWithBLOBs.getSupervisor() !=""){
+            criteria.andSupervisorEqualTo(diagnosisPlanWithBLOBs.getSupervisor());
+        }
+        if(diagnosisPlanWithBLOBs.getIsPass1() != null && diagnosisPlanWithBLOBs.getIsPass1().toString() !=""){
+            criteria.andIsPassEqualTo(diagnosisPlanWithBLOBs.getIsPass1());
         }
         List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
         Response response = Responses.successResponse();

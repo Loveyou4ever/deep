@@ -6,10 +6,9 @@ import com.deep.domain.model.NutritionPlanExample;
 import com.deep.domain.model.NutritionPlanWithBLOBs;
 import com.deep.domain.service.NutritionPlanService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -40,18 +39,25 @@ public class NurtritionController {
     }
     @ResponseBody
     @RequestMapping(value = "/NutritionInsert/show",method = RequestMethod.GET)
-    public Response addPlan(@Valid NutritionPlanWithBLOBs insert,
-                            @RequestParam("s_nutritionT") String s_nutritionT
+    public Response addPlan(@Valid NutritionPlanWithBLOBs insert, BindingResult result
                             ) throws ParseException {
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
-        Date nutritionT =  formatter.parse(s_nutritionT);
+        if(result.hasErrors()){
+            List<ObjectError> ls = result.getAllErrors();
+            for (int i = 0; i < ls.size(); i++) {
+                System.out.println("error:"+ls.get(i));
+            }
+        }
+        Date nutritionT = new Date();
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        if (insert.getNutritionT().toString() != "") {
+            nutritionT =  formatter.parse(insert.getNutritionT().toString());
+        }
 
         Byte zero = 0;
         insert.setGmtCreate(new Date());
         insert.setFactoryNum(insert.getFactoryNum());
         insert.setBuilding(insert.getBuilding());
         insert.setNutritionT(nutritionT);
-        /*insert.setNutritionT(insert.getNutritionT());*/
         insert.setQuantity(insert.getQuantity());
         insert.setAverage(insert.getAverage());
         insert.setPeriod(insert.getPeriod());
@@ -120,18 +126,19 @@ public class NurtritionController {
     }
     @ResponseBody
     @RequestMapping(value = "/NutritionUpdateByProfessor/show",method = RequestMethod.GET)
-    public Response changePlan(@Valid NutritionPlanWithBLOBs update,
-                               @RequestParam("s_nutritionT") String s_nutritionT
+    public Response changePlan(@Valid NutritionPlanWithBLOBs update
                                ) throws ParseException {
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
-        Date nutritionT =  formatter.parse(s_nutritionT);
+        Date nutritionT = new Date();
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        if (update.getNutritionT().toString() != "") {
+            nutritionT =  formatter.parse(update.getNutritionT().toString());
+        }
 
         update.setId(update.getId());
         update.setGmtModified(new Date());
         update.setFactoryNum(update.getFactoryNum());
         update.setBuilding(update.getBuilding());
         update.setNutritionT(nutritionT);
-        /*update.setNutritionT(update.getNutritionT());*/
         update.setQuantity(update.getQuantity());
         update.setAverage(update.getAverage());
         update.setPeriod(update.getPeriod());
@@ -206,7 +213,18 @@ public class NurtritionController {
     }
     @ResponseBody
     @RequestMapping(value = "/NutritionSelective/show",method = RequestMethod.GET)
-    public Response findPlanSelective(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs){
+    public Response findPlanSelective(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs,
+                                      @RequestParam("s_nutritionT1") String s_nutritionT1,
+                                      @RequestParam("s_nutritionT2") String s_nutritionT2
+                                      ) throws ParseException {
+        Date nutritionT1 = null;
+        Date nutritionT2 = null;
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        if (s_nutritionT1 != "" && s_nutritionT2 != "") {
+            nutritionT1 =  formatter.parse(s_nutritionT1);
+            nutritionT2 =  formatter.parse(s_nutritionT2);
+        }
+
         NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
         NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
 
@@ -216,14 +234,17 @@ public class NurtritionController {
         if(nutritionPlanWithBLOBs.getFactoryNum() != null && nutritionPlanWithBLOBs.getFactoryNum().toString() !=""){
             criteria.andFactoryNumEqualTo(nutritionPlanWithBLOBs.getFactoryNum());
         }
-        if(nutritionPlanWithBLOBs.getQuantity() != null && nutritionPlanWithBLOBs.getQuantity().toString() !=""){
-            criteria.andQuantityEqualTo(nutritionPlanWithBLOBs.getQuantity());
-        }
         if(nutritionPlanWithBLOBs.getBuilding() != null && nutritionPlanWithBLOBs.getBuilding() !=""){
             criteria.andBuildingEqualTo(nutritionPlanWithBLOBs.getBuilding());
         }
+        if(nutritionPlanWithBLOBs.getQuantity() != null && nutritionPlanWithBLOBs.getQuantity().toString() !=""){
+            criteria.andQuantityEqualTo(nutritionPlanWithBLOBs.getQuantity());
+        }
         if(nutritionPlanWithBLOBs.getAverage() != null && nutritionPlanWithBLOBs.getAverage() !=""){
             criteria.andAverageGreaterThanOrEqualTo(nutritionPlanWithBLOBs.getAverage());
+        }
+        if(nutritionT1 != null && nutritionT2 != null){
+            criteria.andNutritionTBetween(nutritionT1,nutritionT2);
         }
         if (nutritionPlanWithBLOBs.getPeriod()!= null && nutritionPlanWithBLOBs.getPeriod() !=""){
             criteria.andPeriodEqualTo(nutritionPlanWithBLOBs.getPeriod());
@@ -243,11 +264,11 @@ public class NurtritionController {
         if(nutritionPlanWithBLOBs.getIsPass() != null && nutritionPlanWithBLOBs.getIsPass().toString() !=""){
             criteria.andIsPassEqualTo(nutritionPlanWithBLOBs.getIsPass());
         }
-        if(nutritionPlanWithBLOBs.getIsPass1() != null && nutritionPlanWithBLOBs.getIsPass1().toString() !=""){
-            criteria.andIsPass1EqualTo(nutritionPlanWithBLOBs.getIsPass1());
-        }
         if(nutritionPlanWithBLOBs.getUpassReason() != null && nutritionPlanWithBLOBs.getUpassReason() !=""){
             criteria.andUpassReasonLike(nutritionPlanWithBLOBs.getUpassReason());
+        }
+        if(nutritionPlanWithBLOBs.getIsPass1() != null && nutritionPlanWithBLOBs.getIsPass1().toString() !=""){
+            criteria.andIsPass1EqualTo(nutritionPlanWithBLOBs.getIsPass1());
         }
         List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample);
         Response response = Responses.successResponse();
@@ -256,23 +277,24 @@ public class NurtritionController {
         response.setData(data);
         return response;
     }
-
-    //根据日期查询信息
+    /*//根据日期查询信息
     @RequestMapping(value = "/NutritionSelectByDate",method = RequestMethod.GET)
     public String findPlanSelectByDate(){
         return "NutritionSelectByDate";
     }
     @ResponseBody
     @RequestMapping(value = "/NutritionSelectByDate/show",method = RequestMethod.GET)
-    public Response findPlanSelectByDate(@RequestParam("s_nutritionT1") String s_nutritionT1,
+    public Response findPlanSelectByDate(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs,
+                                         @RequestParam("s_nutritionT1") String s_nutritionT1,
                                          @RequestParam("s_nutritionT2") String s_nutritionT2
     ) throws ParseException {
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
+        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         Date nutritionT1 =  formatter.parse(s_nutritionT1);
         Date nutritionT2 =  formatter.parse(s_nutritionT2);
 
         NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
         NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
+
         if(nutritionT1 != null && nutritionT2 != null){
             criteria.andNutritionTBetween(nutritionT1,nutritionT2);
         }
@@ -282,7 +304,7 @@ public class NurtritionController {
         data.put("nutrition_plan",select);
         response.setData(data);
         return response;
-    }
+    }*/
     //供技术审核查询信息
     @RequestMapping(value = "/NutritionSelectByProfessor",method = RequestMethod.GET)
     public String findPlanSelectByProfessor(){

@@ -18,6 +18,8 @@ public class NutritionPlan implements Serializable {
 
     private Date nutritionT;
 
+//    private String nutritionT;
+
     private Long quantity;
 
     private String average;
@@ -97,6 +99,14 @@ public class NutritionPlan implements Serializable {
     public void setNutritionT(Date nutritionT) {
         this.nutritionT = nutritionT;
     }
+
+    /*public String getNutritionT() {
+        return nutritionT;
+    }
+
+    public void setNutritionT(String nutritionT) {
+        this.nutritionT = nutritionT == null ? null : nutritionT.trim();
+    }*/
 
     public Long getQuantity() {
         return quantity;
