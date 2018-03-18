@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,42 +47,41 @@ public class NoticeController {
     }
     @ResponseBody
     @RequestMapping(value = "/NoticeInsert/show",method = RequestMethod.POST)
-    public Response addPlan(@Valid NoticePlan insert,
-                            @RequestParam("file") MultipartFile file,
-                            HttpServletRequest request){
-
+    public Response addPlan(@Valid NoticePlan insert, HttpServletRequest request){
         insert.setGmtCreate(new Date());
         insert.setProfessor(insert.getProfessor());
         insert.setType(insert.getType());
         insert.setTitle(insert.getTitle());
         insert.setContent(insert.getContent());
 
-        String filename = file.getOriginalFilename();
-        String suffixname = filename.substring(filename.lastIndexOf("."));
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+        MultipartFile file = null;
+        String filename = null;
+        String suffixname = null;
         String filepath = request.getSession().getServletContext().getContextPath()+"../picture/"+insert.getProfessor()+"/";
-        /*解决中文问题，liunx下中文路径，图片显示问题
-        filename = UUID.randomUUID() + suffixname;
-        System.out.println(filepath+filename);*/
-
-        if(!file.isEmpty()){
-            try {
-                noticePlanService.uploadFile(file.getBytes(), filepath,filename );
-            } catch (Exception e) {
-                // TODO: handle exception
+        for (int i = 0; i < files.size(); i++) {
+            file = files.get(i);
+            filename = file.getOriginalFilename();
+            suffixname = filename.substring(filename.lastIndexOf("."));
+            /*//防止在Linux系统下不识别中文路径名
+            filename = UUID.randomUUID() + suffixname;*/
+            if (!file.isEmpty()) {
+                try {
+                    noticePlanService.uploadFile(file.getBytes(), filepath, filename);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
             }
+            insert.setFilepath(filepath+filename);
+            insert.setSuffixname(suffixname);
+            noticePlanService.addPlan(insert);
         }
-
-        insert.setSuffixname(suffixname);
-        insert.setFilepath(filepath+filename);
-        noticePlanService.addPlan(insert);
-
         NoticePlanExample insertExample = new NoticePlanExample();
         NoticePlanExample.Criteria criteria = insertExample.createCriteria();
         criteria.andTitleEqualTo(insert.getTitle());
         criteria.andTypeEqualTo(insert.getType());
         criteria.andProfessorEqualTo(insert.getProfessor());
         List<NoticePlan> select = noticePlanService.findPlanSelective(insertExample);
-
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("notice_plan",select);
@@ -110,16 +112,40 @@ public class NoticeController {
         return "NoticeUpdate";
     }
     @ResponseBody
-    @RequestMapping(value = "/NoticeUpdate/show",method = RequestMethod.GET)
-    public Response changePlan(@Valid NoticePlan update){
-
+    @RequestMapping(value = "/NoticeUpdate/show",method = RequestMethod.POST)
+    public Response changePlan(@Valid NoticePlan update,HttpServletRequest request){
         update.setId(update.getId());
         update.setGmtModified(new Date());
         update.setType(update.getType());
         update.setTitle(update.getTitle());
         update.setContent(update.getContent());
 
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+        MultipartFile file = null;
+        String filename = null;
+        String suffixname = "";
+        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/"+update.getProfessor()+"/";
+        file = files.get(0);
+        filename = file.getOriginalFilename();
+        if (!filename.isEmpty())
+        {
+            suffixname= filename.substring(filename.lastIndexOf("."));
+        }
+            /*//防止在Linux系统下不识别中文路径名
+            filename = UUID.randomUUID() + suffixname;*/
+        if (!file.isEmpty()) {
+            try {
+                noticePlanService.uploadFile(file.getBytes(), filepath, filename);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+        System.out.println(suffixname);
+        System.out.println(filename);
+        update.setSuffixname(suffixname);
+        update.setFilepath(filepath+filename);
         noticePlanService.changePlan(update);
+
         NoticePlan selectById = noticePlanService.findPlanById(update.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -156,7 +182,7 @@ public class NoticeController {
                                       @RequestParam ("s_gmtCreate2") String s_gmtCreate2,
                                       @RequestParam ("s_gmtModified1") String s_gmtModified1,
                                       @RequestParam ("s_gmtModified2") String s_gmtModified2
-    ) throws ParseException {
+                                      ) throws ParseException {
         Date gmtCreate1 = null;
         Date gmtCreate2 = null;
         Date gmtModified1 = null;
@@ -199,5 +225,52 @@ public class NoticeController {
         data.put("notice_plan",select);
         response.setData(data);
         return response;
+    }
+
+    @RequestMapping(value = "/Download",method = RequestMethod.GET)
+    public String downloadFile(){
+        return "Download";
+    }
+    @ResponseBody
+    @RequestMapping(value = "/Download/show",method = RequestMethod.GET)
+    public String downloadFile(@RequestParam ("filePath") String filePath,/*HttpServletRequest request,*/
+                               HttpServletResponse response){
+            File file = new File(filePath);
+            if (file.exists()) {
+                response.setContentType("application/force-download");// 设置强制下载不打开
+                response.addHeader("Content-Disposition", "attachment;file=" + filePath);// 设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    bis = new BufferedInputStream(fis);
+                    OutputStream os = response.getOutputStream();
+                    int i = bis.read(buffer);
+                    while (i != -1) {
+                        os.write(buffer, 0, i);
+                        i = bis.read(buffer);
+                    }
+                    System.out.println("success");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        return null;
     }
 }

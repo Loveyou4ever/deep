@@ -276,22 +276,22 @@
       <if test="gmtModified != null" >
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
-      <if test="professor != null" >
+      <if test="professor != null and professor != ''" >
         professor = #{professor,jdbcType=VARCHAR},
       </if>
       <if test="type != null" >
         type = #{type,jdbcType=TINYINT},
       </if>
-      <if test="title != null" >
+      <if test="title != null and title != ''" >
         title = #{title,jdbcType=VARCHAR},
       </if>
       <if test="suffixname != null" >
         suffixname = #{suffixname,jdbcType=VARCHAR},
       </if>
-      <if test="filepath != null" >
+      <if test="filepath != null and filepath != ''" >
         filepath = #{filepath,jdbcType=VARCHAR},
       </if>
-      <if test="content != null" >
+      <if test="content != null and content != ''" >
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
     </set>
