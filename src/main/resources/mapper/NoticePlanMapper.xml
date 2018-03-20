@@ -8,8 +8,6 @@
     <result column="professor" property="professor" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="TINYINT" />
     <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="suffixname" property="suffixname" jdbcType="VARCHAR" />
-    <result column="filepath" property="filepath" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.deep.domain.model.NoticePlan" extends="BaseResultMap" >
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
@@ -73,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, gmt_create, gmt_modified, professor, type, title, suffixname, filepath
+    id, gmt_create, gmt_modified, professor, type, title
   </sql>
   <sql id="Blob_Column_List" >
     content
@@ -129,12 +127,10 @@
   <insert id="insert" parameterType="com.deep.domain.model.NoticePlan" >
     insert into notice_plan (id, gmt_create, gmt_modified, 
       professor, type, title, 
-      suffixname, filepath, content
-      )
+      content)
     values (#{id,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{professor,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{title,jdbcType=VARCHAR}, 
-      #{suffixname,jdbcType=VARCHAR}, #{filepath,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
-      )
+      #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.deep.domain.model.NoticePlan" >
     insert into notice_plan
@@ -156,12 +152,6 @@
       </if>
       <if test="title != null" >
         title,
-      </if>
-      <if test="suffixname != null" >
-        suffixname,
-      </if>
-      <if test="filepath != null" >
-        filepath,
       </if>
       <if test="content != null" >
         content,
@@ -185,12 +175,6 @@
       </if>
       <if test="title != null" >
         #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="suffixname != null" >
-        #{suffixname,jdbcType=VARCHAR},
-      </if>
-      <if test="filepath != null" >
-        #{filepath,jdbcType=VARCHAR},
       </if>
       <if test="content != null" >
         #{content,jdbcType=LONGVARCHAR},
@@ -224,12 +208,6 @@
       <if test="record.title != null" >
         title = #{record.title,jdbcType=VARCHAR},
       </if>
-      <if test="record.suffixname != null" >
-        suffixname = #{record.suffixname,jdbcType=VARCHAR},
-      </if>
-      <if test="record.filepath != null" >
-        filepath = #{record.filepath,jdbcType=VARCHAR},
-      </if>
       <if test="record.content != null" >
         content = #{record.content,jdbcType=LONGVARCHAR},
       </if>
@@ -246,8 +224,6 @@
       professor = #{record.professor,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
       title = #{record.title,jdbcType=VARCHAR},
-      suffixname = #{record.suffixname,jdbcType=VARCHAR},
-      filepath = #{record.filepath,jdbcType=VARCHAR},
       content = #{record.content,jdbcType=LONGVARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -260,9 +236,7 @@
       gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       professor = #{record.professor,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
-      title = #{record.title,jdbcType=VARCHAR},
-      suffixname = #{record.suffixname,jdbcType=VARCHAR},
-      filepath = #{record.filepath,jdbcType=VARCHAR}
+      title = #{record.title,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -279,17 +253,11 @@
       <if test="professor != null and professor != ''" >
         professor = #{professor,jdbcType=VARCHAR},
       </if>
-      <if test="type != null" >
+      <if test="type != null and type != ''" >
         type = #{type,jdbcType=TINYINT},
       </if>
       <if test="title != null and title != ''" >
         title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="suffixname != null" >
-        suffixname = #{suffixname,jdbcType=VARCHAR},
-      </if>
-      <if test="filepath != null and filepath != ''" >
-        filepath = #{filepath,jdbcType=VARCHAR},
       </if>
       <if test="content != null and content != ''" >
         content = #{content,jdbcType=LONGVARCHAR},
@@ -304,8 +272,6 @@
       professor = #{professor,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
       title = #{title,jdbcType=VARCHAR},
-      suffixname = #{suffixname,jdbcType=VARCHAR},
-      filepath = #{filepath,jdbcType=VARCHAR},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -315,9 +281,7 @@
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       professor = #{professor,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
-      title = #{title,jdbcType=VARCHAR},
-      suffixname = #{suffixname,jdbcType=VARCHAR},
-      filepath = #{filepath,jdbcType=VARCHAR}
+      title = #{title,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select resultMap="ResultMapWithBLOBs" parameterType="com.deep.domain.model.NoticePlanExample" id="selectByExampleWithBLOBsWithRowbounds" >

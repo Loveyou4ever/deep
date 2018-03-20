@@ -34,7 +34,10 @@ public class DiagnosisController {
         return "Hello DiagnosisPlan!";
     }
 
-    //插入一条完整信息
+//    按主键删除的接口：/DiagnosisInsert
+//    按主键删除的方法名：addPlan()
+//    接收参数：整个表单信息（所有参数必填）
+//    参数类型为：Long factoryNum;Date diagnosisT;String building;String etB;String operator;String remark;String diagnosisC;String diagnosisM;String drugQ;
     @RequestMapping(value = "/DiagnosisInsert",method = RequestMethod.GET)
     public String addPlan(){
         return "DiagnosisInsert";
@@ -80,7 +83,9 @@ public class DiagnosisController {
         return response;
     }
 
-    //根据主键删除信息
+//    按主键删除的接口：/DiagnosisDeleteById
+//    按主键删除的方法名：dropPlan()
+//    接收参数：整型id，根据主键号删除
     @RequestMapping(value = "/DiagnosisDeleteById",method = RequestMethod.GET)
     public String dropPlan(){
         return "DiagnosisDeleteById";
@@ -97,7 +102,9 @@ public class DiagnosisController {
         return response;
     }
 
-    //根据主键修改信息
+//    专家使用按主键修改的接口：/DiagnosisUpdateByProfessor
+//    专家使用按主键修改的方法名：changePlanByProfessor()
+//    专家使用接收参数：整个表单类型
     @RequestMapping(value = "/DiagnosisUpdateByProfessor",method = RequestMethod.GET)
     public String changePlanByProfessor(){
         return "DiagnosisUpdateByProfessor";
@@ -134,6 +141,9 @@ public class DiagnosisController {
         return response;
     }
 
+//    监督者使用按主键修改的接口：/DiagnosisUpdateBySupervisor
+//    监督者使用按主键修改的方法名：changePlanBySupervisor()
+//    监督者使用接收参数：整个表单信息（整型id必填，各参数选填）
     @RequestMapping(value = "/DiagnosisUpdateBySupervisor",method = RequestMethod.GET)
     public String changePlanBySupervisor(){
         return "DiagnosisUpdateBySupervisor";
@@ -155,7 +165,9 @@ public class DiagnosisController {
         return response;
     }
 
-    //根据主键查询
+//    按主键查询的接口：/DiagnosisSelectById
+//    按主键查询的方法名：findPlanById()
+//    接收参数：整型的主键号（保留接口查询，前端不调用此接口）
     @RequestMapping(value = "/DiagnosisSelectById",method = RequestMethod.GET)
     public String findPlanById(){
         return "DiagnosisSelectById";
@@ -172,7 +184,9 @@ public class DiagnosisController {
         return response;
     }
 
-    //根据条件查询信息
+//    按条件查询接口：/DiagnosisSelective
+//    按条件查询方法名：findPlanSelective()
+//    接收的参数：前端的各参数，以及两个("s_diagnosisT1")("s_diagnosisT2")时间字符串（所有参数可以选填）
     @RequestMapping(value = "/DiagnosisSelective",method = RequestMethod.GET)
     public String findPlanSelective(){
         return "DiagnosisSelective";
@@ -186,22 +200,20 @@ public class DiagnosisController {
         Date diagnosisT1 = null;
         Date diagnosisT2 = null;
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
+        DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
         if (s_diagnosisT1 != "" && s_diagnosisT2 != ""){
             diagnosisT1 =  formatter.parse(s_diagnosisT1);
             diagnosisT2 =  formatter.parse(s_diagnosisT2);
         }
-
-        DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
-        DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
-
+        if(diagnosisT1 != null && diagnosisT2 != null){
+            criteria.andDiagnosisTBetween(diagnosisT1,diagnosisT2);
+        }
         if(diagnosisPlanWithBLOBs.getId() != null && diagnosisPlanWithBLOBs.getId().toString() !=""){
             criteria.andIdEqualTo(diagnosisPlanWithBLOBs.getId());
         }
         if(diagnosisPlanWithBLOBs.getFactoryNum() != null && diagnosisPlanWithBLOBs.getFactoryNum().toString() !=""){
             criteria.andFactoryNumEqualTo(diagnosisPlanWithBLOBs.getFactoryNum());
-        }
-        if(diagnosisT1 != null && diagnosisT2 != null){
-            criteria.andDiagnosisTBetween(diagnosisT1,diagnosisT2);
         }
         if(diagnosisPlanWithBLOBs.getBuilding() != null && diagnosisPlanWithBLOBs.getBuilding() !=""){
             criteria.andBuildingEqualTo(diagnosisPlanWithBLOBs.getBuilding());
@@ -238,7 +250,9 @@ public class DiagnosisController {
         return response;
     }
 
-    //提供技术审核查询信息
+//    供技术审核查询信息
+//    供技术审核查询方法名：findPlanSelectByProfessor()
+//    接收的参数：前端的各参数，（所有参数可以选填）
     @RequestMapping(value = "/DiagnosisSelectByProfessor",method = RequestMethod.GET)
     public String findPlanByProfessor(){
         return "DiagnosisSelectByProfessor";
@@ -270,7 +284,9 @@ public class DiagnosisController {
         return response;
     }
 
-    //提供监督者查询信息
+//    供监督者查询信息
+//    供监督者查询方法名：findPlanSelectBySupervisor()
+//    接收的参数：前端的各参数，（所有参数可以选填）
     @RequestMapping(value = "/DiagnosisSelectBySupervisor",method = RequestMethod.GET)
     public String findPlanSelectBySupervisor(){
         return "DiagnosisSelectBySupervisor";

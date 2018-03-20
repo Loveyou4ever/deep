@@ -32,6 +32,10 @@ public class BreedingController {
         return "Hello BreedingPlan!";
     }
 
+//    按主键删除的接口：/BreedingInsert
+//    按主键删除的方法名：addPlan()
+//    接收参数：整个表单信息（所有参数必填）
+//    参数类型为：Long factoryNum;String building;String mEtI;String mEtB;String fEtI;String fEtB;Date breedingT; Date gestationT;Date prenatalIT;Date cubT;Integer quantity;String operator;String remark；
     @RequestMapping(value = "/BreedingInsert",method = RequestMethod.GET)
     public String addPlan(){
         return "BreedingInsert";
@@ -101,6 +105,9 @@ public class BreedingController {
         return response;
     }
 
+//    按主键删除的接口：/BreedingDeleteById
+//    按主键删除的方法名：dropPlan()
+//    接收参数：整型id，根据主键号删除
     @RequestMapping(value = "/BreedingDeleteById",method = RequestMethod.GET)
     public String dropPlan(){
         return "BreedingDeleteById";
@@ -117,6 +124,9 @@ public class BreedingController {
         return response;
     }
 
+//    专家使用按主键修改的接口：/BreedingUpdateByProfessor
+//    专家使用按主键修改的方法名：changePlanByProfessor()
+//    专家使用接收参数：整个表单类型
     @RequestMapping(value = "/BreedingUpdateByProfessor",method = RequestMethod.GET)
     public String changePlanByProfessor(){
         return "BreedingUpdateByProfessor";
@@ -170,6 +180,9 @@ public class BreedingController {
         return response;
     }
 
+//    监督者使用按主键修改的接口：/BreedingUpdateBySupervisor
+//    监督者使用按主键修改的方法名：changePlanBySupervisor()
+//    监督者使用接收参数：整个表单信息（整型id必填，各参数选填）
     @RequestMapping(value = "/BreedingUpdateBySupervisor",method = RequestMethod.GET)
     public String changePlanBySupervisor(){
         return "BreedingUpdateBySupervisor";
@@ -191,7 +204,9 @@ public class BreedingController {
         return response;
     }
 
-    //根据主键查询
+//    按主键查询的接口：/BreedingSelectById
+//    按主键查询的方法名：findPlanById()
+//    接收参数：整型的主键号（保留接口查询，前端不调用此接口）
     @RequestMapping(value = "/BreedingSelectById",method = RequestMethod.GET)
     public String findPlanById(){
         return "BreedingSelectById";
@@ -208,6 +223,9 @@ public class BreedingController {
         return response;
     }
 
+//    按条件查询接口：/BreedingSelective
+//    按条件查询方法名：findPlanSelective()
+//    接收的参数：前端的各参数，以及八个("s_breedingT1")("s_breedingT2")("s_gestationT1")("s_gestationT2")("s_prenatalIT1")("s_prenatalIT2")("s_cubT1")("s_cubT2")时间字符串（所有参数可以选填）
     @RequestMapping(value = "/BreedingSelective",method = RequestMethod.GET)
     public String findPlanSelective(){
         return "BreedingSelective";
@@ -315,6 +333,9 @@ public class BreedingController {
         return response;
     }
 
+//    供技术审核查询信息
+//    供技术审核查询方法名：findPlanSelectByProfessor()
+//    接收的参数：前端的各参数，（所有参数可以选填）
     @RequestMapping(value = "/BreedingSelectByProfessor",method = RequestMethod.GET)
     public String findPlanSelectByProfessor(){
         return "BreedingSelectByProfessor";
@@ -346,6 +367,9 @@ public class BreedingController {
         return response;
     }
 
+//    供监督者查询信息
+//    供监督者查询方法名：findPlanSelectBySupervisor()
+//    接收的参数：前端的各参数，（所有参数可以选填）
     @RequestMapping(value = "/BreedingSelectBySupervisor",method = RequestMethod.GET)
     public String findPlanSelectBySupervisor(){
         return "BreedingSelectSupervisor";

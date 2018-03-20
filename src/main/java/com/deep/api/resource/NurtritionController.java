@@ -33,6 +33,12 @@ public class NurtritionController {
         return "Hello NutritionPlan!";
     }
 
+//    按主键删除的接口：/NutritionInsert
+//    按主键删除的方法名：addPlan()
+//    接收参数：整个表单信息（所有参数必填）
+//    参数类型为：
+//    Long factoryNum; String building;Date nutritionT;Long quantity;String average;String period;String water;String operator;String remark;
+//    String materialA;String materialM;String materialO;String materialWM;String materialWO;String roughageP;String roughageD;String roughageWP;String roughageWD;String roughageWO;String pickingM;String pickingR;String pickingO;
     @RequestMapping(value = "/NutritionInsert",method = RequestMethod.GET)
     public String addPlan(){
         return "NutritionInsert";
@@ -104,6 +110,9 @@ public class NurtritionController {
         return response;
     }
 
+//    按主键删除的接口：/NutritionDeleteById
+//    按主键删除的方法名：dropPlan()
+//    接收参数：整型id，根据主键号删除
     @RequestMapping(value = "/NutritionDeleteById",method = RequestMethod.GET)
     public String dropPlan(){
         return "NutritionDeleteById";
@@ -120,20 +129,21 @@ public class NurtritionController {
         return response;
     }
 
+//    专家使用按主键修改的接口：/NutritionUpdateByProfessor
+//    专家使用按主键修改的方法名：changePlanByProfessor()
+//    专家使用接收参数：整个表单类型
     @RequestMapping(value = "/NutritionUpdateByProfessor",method = RequestMethod.GET)
-    public String changePlan(){
+    public String changePlanByProfessor(){
         return "NutritionUpdateByProfessor";
     }
     @ResponseBody
     @RequestMapping(value = "/NutritionUpdateByProfessor/show",method = RequestMethod.GET)
-    public Response changePlan(@Valid NutritionPlanWithBLOBs update
-                               ) throws ParseException {
+    public Response changePlanByProfessor(@Valid NutritionPlanWithBLOBs update) throws ParseException {
         Date nutritionT = new Date();
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         if (update.getNutritionT().toString() != "") {
             nutritionT =  formatter.parse(update.getNutritionT().toString());
         }
-
         update.setId(update.getId());
         update.setGmtModified(new Date());
         update.setFactoryNum(update.getFactoryNum());
@@ -170,6 +180,9 @@ public class NurtritionController {
         return response;
     }
 
+//    监督者使用按主键修改的接口：/NutritionUpdateBySupervisor
+//    监督者使用按主键修改的方法名：changePlanBySupervisor()
+//    监督者使用接收参数：整个表单信息（整型id必填，各参数选填）
     @RequestMapping(value = "/NutritionUpdateBySupervisor",method = RequestMethod.GET)
     public String changePlanBySupervisor(){
         return "NutritionUpdateBySupervisor";
@@ -191,6 +204,9 @@ public class NurtritionController {
         return response;
     }
 
+//    按主键查询的接口：/NutritionSelectById
+//    按主键查询的方法名：findPlanById()
+//    接收参数：整型的主键号（保留接口查询，前端不调用此接口）
     @RequestMapping(value = "/NutritionSelectById",method = RequestMethod.GET)
     public String findPlanById(){
         return "NutritionSelectById";
@@ -206,7 +222,9 @@ public class NurtritionController {
         return response;
     }
 
-    //根据条件查询信息
+//    按条件查询接口：/NutritionSelective
+//    按条件查询方法名：findPlanSelective()
+//    接收的参数：前端的各参数，以及两个("s_nutritionT1")("s_nutritionT2")时间字符串（所有参数可以选填）
     @RequestMapping(value = "/NutritionSelective",method = RequestMethod.GET)
     public String findPlanSelective(){
         return "NutritionSelective";
@@ -220,14 +238,15 @@ public class NurtritionController {
         Date nutritionT1 = null;
         Date nutritionT2 = null;
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+        NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
+        NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
         if (s_nutritionT1 != "" && s_nutritionT2 != "") {
             nutritionT1 =  formatter.parse(s_nutritionT1);
             nutritionT2 =  formatter.parse(s_nutritionT2);
         }
-
-        NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
-        NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
-
+        if(nutritionT1 != null && nutritionT2 != null){
+            criteria.andNutritionTBetween(nutritionT1,nutritionT2);
+        }
         if(nutritionPlanWithBLOBs.getId() != null && nutritionPlanWithBLOBs.getId().toString() !=""){
             criteria.andIdEqualTo(nutritionPlanWithBLOBs.getId());
         }
@@ -242,9 +261,6 @@ public class NurtritionController {
         }
         if(nutritionPlanWithBLOBs.getAverage() != null && nutritionPlanWithBLOBs.getAverage() !=""){
             criteria.andAverageGreaterThanOrEqualTo(nutritionPlanWithBLOBs.getAverage());
-        }
-        if(nutritionT1 != null && nutritionT2 != null){
-            criteria.andNutritionTBetween(nutritionT1,nutritionT2);
         }
         if (nutritionPlanWithBLOBs.getPeriod()!= null && nutritionPlanWithBLOBs.getPeriod() !=""){
             criteria.andPeriodEqualTo(nutritionPlanWithBLOBs.getPeriod());
@@ -305,7 +321,10 @@ public class NurtritionController {
         response.setData(data);
         return response;
     }*/
-    //供技术审核查询信息
+
+//    供技术审核查询信息
+//    供技术审核查询方法名：findPlanSelectBySupervisor()
+//    接收的参数：前端的各参数，（所有参数可以选填）
     @RequestMapping(value = "/NutritionSelectByProfessor",method = RequestMethod.GET)
     public String findPlanSelectByProfessor(){
         return "NutritionSelectByProfessor";
@@ -334,7 +353,10 @@ public class NurtritionController {
         response.setData(data);
         return response;
     }
-    //供监督查询信息
+
+//    供监督者查询信息
+//    供监督者查询方法名：findPlanSelectBySupervisor()
+//    接收的参数：前端的各参数，（所有参数可以选填）
     @RequestMapping(value = "/NutritionSelectBySupervisor",method = RequestMethod.GET)
     public String findPlanSelectBySupervisor(){
         return "NutritionSelectBySupervisor";

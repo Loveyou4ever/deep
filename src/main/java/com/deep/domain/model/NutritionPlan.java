@@ -18,8 +18,6 @@ public class NutritionPlan implements Serializable {
 
     private Date nutritionT;
 
-//    private String nutritionT;
-
     private Long quantity;
 
     private String average;
