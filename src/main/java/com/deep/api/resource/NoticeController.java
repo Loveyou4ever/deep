@@ -6,10 +6,7 @@ import com.deep.domain.model.NoticePlan;
 import com.deep.domain.model.NoticePlanExample;
 import com.deep.domain.service.NoticePlanService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -20,10 +17,7 @@ import javax.validation.Valid;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * author: Created  By  Caojiawei
@@ -47,35 +41,14 @@ public class NoticeController {
     }
     @ResponseBody
     @RequestMapping(value = "/NoticeInsert/show",method = RequestMethod.POST)
-    public Response addPlan(@Valid NoticePlan insert, HttpServletRequest request){
+    public Response addPlan(@Valid NoticePlan insert){
         insert.setGmtCreate(new Date());
         insert.setProfessor(insert.getProfessor());
         insert.setType(insert.getType());
         insert.setTitle(insert.getTitle());
         insert.setContent(insert.getContent());
+        noticePlanService.addPlan(insert);
 
-        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-        MultipartFile file = null;
-        String filename = null;
-        String suffixname = null;
-        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/"+insert.getProfessor()+"/";
-        for (int i = 0; i < files.size(); i++) {
-            file = files.get(i);
-            filename = file.getOriginalFilename();
-            suffixname = filename.substring(filename.lastIndexOf("."));
-            /*//防止在Linux系统下不识别中文路径名
-            filename = UUID.randomUUID() + suffixname;*/
-            if (!file.isEmpty()) {
-                try {
-                    noticePlanService.uploadFile(file.getBytes(), filepath, filename);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                }
-            }
-            insert.setFilepath(filepath+filename);
-            insert.setSuffixname(suffixname);
-            noticePlanService.addPlan(insert);
-        }
         NoticePlanExample insertExample = new NoticePlanExample();
         NoticePlanExample.Criteria criteria = insertExample.createCriteria();
         criteria.andTitleEqualTo(insert.getTitle());
@@ -192,7 +165,7 @@ public class NoticeController {
             gmtCreate1 =  formatter.parse(s_gmtCreate1);
             gmtCreate2 =  formatter.parse(s_gmtCreate2);
         }
-        if (s_gmtCreate1 != "" && s_gmtCreate2 != ""){
+        if (s_gmtModified1 != "" && s_gmtModified2 != ""){
             gmtModified1 =  formatter.parse(s_gmtModified1);
             gmtModified2 =  formatter.parse(s_gmtModified2);
         }
@@ -216,13 +189,48 @@ public class NoticeController {
             criteria.andTypeEqualTo(noticePlan.getType());
         }
         if(noticePlan.getTitle() != null && noticePlan.getTitle() !=""){
-            criteria.andTitleEqualTo(noticePlan.getTitle());
+            criteria.andTitleLike('%'+noticePlan.getTitle()+'%');
         }
 
         List<NoticePlan> select = noticePlanService.findPlanSelective(noticePlanExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("notice_plan",select);
+        response.setData(data);
+        return response;
+    }
+    @RequestMapping(value = "/Upload",method = RequestMethod.GET)
+    public String uploadFile(){
+        return "Upload";
+    }
+    @ResponseBody
+    @RequestMapping(value = "/Upload/show",method = RequestMethod.POST)
+    public Response uploadFile(HttpServletRequest request){
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+        MultipartFile file = null;
+        String filename = null;
+        String suffixname = null;
+        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/"+"/";
+        List<String> path = new ArrayList<>();
+        for (int i = 0; i < files.size(); i++) {
+            file = files.get(i);
+            filename = file.getOriginalFilename();
+            suffixname = filename.substring(filename.lastIndexOf("."));
+            /*//防止在Linux系统下不识别中文路径名
+            filename = UUID.randomUUID() + suffixname;*/
+            if (!file.isEmpty()) {
+                try {
+                    noticePlanService.uploadFile(file.getBytes(), filepath, filename);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+            }
+            System.out.println(filepath+filename);
+            path.add(filepath+filename);
+        }
+        Response response = Responses.successResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("address",path);
         response.setData(data);
         return response;
     }
@@ -233,12 +241,12 @@ public class NoticeController {
     }
     @ResponseBody
     @RequestMapping(value = "/Download/show",method = RequestMethod.GET)
-    public String downloadFile(@RequestParam ("filePath") String filePath,/*HttpServletRequest request,*/
+    public String downloadFile(@RequestParam ("filePath") String filePath,
                                HttpServletResponse response){
             File file = new File(filePath);
             if (file.exists()) {
-                response.setContentType("application/force-download");// 设置强制下载不打开
-                response.addHeader("Content-Disposition", "attachment;file=" + filePath);// 设置文件名
+//                response.setContentType("application/force-download");// 设置强制下载不打开
+//                response.addHeader("Content-Disposition", "attachment;file=" + filePath);// 设置文件名
                 byte[] buffer = new byte[1024];
                 FileInputStream fis = null;
                 BufferedInputStream bis = null;

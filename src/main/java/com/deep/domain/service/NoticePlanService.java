@@ -41,13 +41,13 @@ public class NoticePlanService {
             return find;
         }
          public static void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
-            File targetFile = new File(filePath);
-            if(!targetFile.exists()){
+        File targetFile = new File(filePath);
+        if(!targetFile.exists()){
             targetFile.mkdirs();
         }
-            FileOutputStream out = new FileOutputStream(filePath+fileName);
-            out.write(file);
-            out.flush();
-            out.close();
-    }
+        FileOutputStream out = new FileOutputStream(filePath+/*Token中表明上传者身份的信息*/fileName);
+        out.write(file);
+        out.flush();
+        out.close();
+        }
 }
