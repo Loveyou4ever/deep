@@ -231,7 +231,7 @@ public class BreedingController {
         return "BreedingSelective";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingSelective/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/BreedingSelective/show",method = RequestMethod.POST)
     public Response findPlanSelective(@Valid BreedingPlan breedingPlan,
                                       @RequestParam("s_breedingT1") String s_breedingT1,
                                       @RequestParam("s_breedingT2") String s_breedingT2,
@@ -284,7 +284,7 @@ public class BreedingController {
             criteria.andMEtIEqualTo(breedingPlan.getmEtI());
         }
         if(breedingPlan.getmEtB() != null && breedingPlan.getmEtB() !=""){
-            criteria.andMEtBEqualTo(breedingPlan.getmEtI());
+            criteria.andMEtBEqualTo(breedingPlan.getmEtB());
         }
         if(breedingPlan.getfEtI() != null && breedingPlan.getfEtI() !=""){
             criteria.andFEtIEqualTo(breedingPlan.getfEtI());

@@ -44,11 +44,30 @@ public class NoticeController {
     }
     @ResponseBody
     @RequestMapping(value = "/NoticeInsert/show",method = RequestMethod.POST)
-    public Response addPlan(@RequestBody @Valid NoticePlan insert){
+    public Response addPlan(@Valid NoticePlan insert,
+                            HttpServletRequest request){
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+        String filepath = request.getSession().getServletContext().getContextPath()+"../"+"picture/"+insert.getProfessor()+"/";
+        String filename = null;
+        String suffixname = null;
+        MultipartFile file = files.get(0);
+        filename = file.getOriginalFilename();
+        if (filename !=""){
+            suffixname = filename.substring(filename.lastIndexOf("."));
+        }
+        if (!file.isEmpty()) {
+            try {
+                noticePlanService.uploadFile(file.getBytes(), filepath, filename);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
         insert.setGmtCreate(new Date());
         insert.setProfessor(insert.getProfessor());
         insert.setType(insert.getType());
         insert.setTitle(insert.getTitle());
+        insert.setFilepath(filepath+filename);
+        insert.setSuffixname(suffixname);
         insert.setContent(insert.getContent());
         noticePlanService.addPlan(insert);
 
@@ -57,6 +76,8 @@ public class NoticeController {
         criteria.andTitleEqualTo(insert.getTitle());
         criteria.andTypeEqualTo(insert.getType());
         criteria.andProfessorEqualTo(insert.getProfessor());
+        criteria.andSuffixnameEqualTo(suffixname);
+        criteria.andFilepathEqualTo(filepath+filename);
         List<NoticePlan> select = noticePlanService.findPlanSelective(insertExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -74,7 +95,7 @@ public class NoticeController {
     }
     @ResponseBody
         @RequestMapping(value = "/NoticeDeleteById/show",method = RequestMethod.DELETE)
-    public Response dropPlan(@RequestBody @Valid NoticePlan delete){
+    public Response dropPlan(@Valid NoticePlan delete){
         noticePlanService.dropPlan(delete.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -92,7 +113,7 @@ public class NoticeController {
     }
     @ResponseBody
     @RequestMapping(value = "/NoticeUpdate/show",method = RequestMethod.POST)
-    public Response changePlan(@RequestBody @Valid NoticePlan update,HttpServletRequest request){
+    public Response changePlan(@Valid NoticePlan update,HttpServletRequest request){
         update.setId(update.getId());
         update.setGmtModified(new Date());
         update.setType(update.getType());
@@ -147,7 +168,7 @@ public class NoticeController {
     }
     @ResponseBody
     @RequestMapping(value = "/NoticeSelective/show",method = RequestMethod.GET)
-    public Response findPlanSelective(@RequestBody @Valid NoticePlan noticePlan,
+    public Response findPlanSelective(@Valid NoticePlan noticePlan,
                                       @RequestParam ("s_gmtCreate1") String s_gmtCreate1,
                                       @RequestParam ("s_gmtCreate2") String s_gmtCreate2,
                                       @RequestParam ("s_gmtModified1") String s_gmtModified1,
@@ -203,16 +224,11 @@ public class NoticeController {
     }
     @ResponseBody
     @RequestMapping(value = "/SearchInSite/show",method = RequestMethod.GET)
-    public Response searchInSite(@Valid NoticePlan noticePlan){
-        NoticePlanExample noticePlanExample = new NoticePlanExample();
-        NoticePlanExample.Criteria criteria = noticePlanExample.createCriteria();
-        if(noticePlan.getTitle() != null && noticePlan.getTitle() !=""){
-            criteria.andTitleLike('%'+noticePlan.getTitle()+'%');
-        }
-        List<NoticePlan> select = noticePlanService.findPlanSelective(noticePlanExample);
+    public Response searchInSite(@RequestParam String string){
+        List<NoticePlan> selectInSite = noticePlanService.selectInSite(string);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
-        data.put("notice_plan",select);
+        data.put("notice_plan",selectInSite);
         response.setData(data);
         return response;
     }
@@ -242,7 +258,7 @@ public class NoticeController {
                 }
             }
             path.add(filepath+filename);
-            System.out.println(path);
+            /*System.out.println(path);*/
         }
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();

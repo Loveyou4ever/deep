@@ -4,6 +4,7 @@ import com.deep.domain.model.NoticePlan;
 import com.deep.domain.model.NoticePlanExample;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public interface NoticePlanMapper {
     List<NoticePlan> selectByExample(NoticePlanExample example);
 
     NoticePlan selectByPrimaryKey(Integer id);
+
+    List<NoticePlan> selectInSite(String string);
 
     int updateByExampleSelective(@Param("record") NoticePlan record, @Param("example") NoticePlanExample example);
 
