@@ -23,7 +23,7 @@ import java.util.List;
  * date: 2018/2/21  19:34
  */
 @Controller
-public class NurtritionController {
+public class NurtritionResource {
     @Resource
     private NutritionPlanService nutritionPlanService;
 

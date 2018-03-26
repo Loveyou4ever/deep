@@ -39,6 +39,7 @@ public class ExampleResource {
   public Response getTestModel() {
     TestModel model = testService.getTestModel("2");
     Response response = Responses.successResponse();
+//    Responses.errorResponse("eee");
     HashMap<String, Object> data = new HashMap<>();
     data.put("test", model);
     response.setData(data);

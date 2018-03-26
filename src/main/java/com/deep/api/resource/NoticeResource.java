@@ -4,6 +4,7 @@ import com.deep.api.response.Response;
 import com.deep.api.response.Responses;
 import com.deep.domain.model.NoticePlan;
 import com.deep.domain.model.NoticePlanExample;
+import com.deep.domain.model.Select;
 import com.deep.domain.service.NoticePlanService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,12 @@ import java.util.*;
  * date: 2018/3/8  20:14
  */
 @Controller
-public class NoticeController {
+public class NoticeResource {
     @Resource
     private NoticePlanService noticePlanService;
 
     @ResponseBody
-    @RequestMapping(value = "/NoticePlan",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticePlan",method = RequestMethod.GET)
     public String helloNotice() {
         return "Hello NoticePlan!";
     }
@@ -38,21 +39,19 @@ public class NoticeController {
 //    按主键删除的方法名：addPlan()
 //    接收参数：整个表单信息（所有参数必填）
 //    参数类型为：String professor;Byte type;String title;String content;
-    @RequestMapping(value = "/NoticeInsert",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticeInsert",method = RequestMethod.GET)
     public String addPlan(){
         return "NoticeInsert";
     }
     @ResponseBody
-    @RequestMapping(value = "/NoticeInsert/show",method = RequestMethod.POST)
-    public Response addPlan(@Valid NoticePlan insert,
-                            HttpServletRequest request){
+    @RequestMapping(value = "/noticeInsert/show",method = RequestMethod.POST)
+    public Response addPlan(@Valid NoticePlan insert, HttpServletRequest request){
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         String filepath = request.getSession().getServletContext().getContextPath()+"../"+"picture/"+insert.getProfessor()+"/";
-        String filename = null;
-        String suffixname = null;
         MultipartFile file = files.get(0);
-        filename = file.getOriginalFilename();
-        if (filename !=""){
+        String filename = file.getOriginalFilename();
+        String suffixname = "";
+        if (!filename.isEmpty()){
             suffixname = filename.substring(filename.lastIndexOf("."));
         }
         if (!file.isEmpty()) {
@@ -66,8 +65,16 @@ public class NoticeController {
         insert.setProfessor(insert.getProfessor());
         insert.setType(insert.getType());
         insert.setTitle(insert.getTitle());
-        insert.setFilepath(filepath+filename);
-        insert.setSuffixname(suffixname);
+        if (!filename.isEmpty()){
+            insert.setFilepath(filepath+filename);
+        }else {
+            insert.setFilepath(null);
+        }
+        if (!filename.isEmpty()){
+            insert.setSuffixname(suffixname);
+        }else {
+            insert.setSuffixname(null);
+        }
         insert.setContent(insert.getContent());
         noticePlanService.addPlan(insert);
 
@@ -76,8 +83,10 @@ public class NoticeController {
         criteria.andTitleEqualTo(insert.getTitle());
         criteria.andTypeEqualTo(insert.getType());
         criteria.andProfessorEqualTo(insert.getProfessor());
-        criteria.andSuffixnameEqualTo(suffixname);
-        criteria.andFilepathEqualTo(filepath+filename);
+        if (!filename.isEmpty()){
+            criteria.andFilepathEqualTo(filepath+filename);
+            criteria.andSuffixnameEqualTo(suffixname);
+        }
         List<NoticePlan> select = noticePlanService.findPlanSelective(insertExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -89,13 +98,13 @@ public class NoticeController {
 //    按主键删除的接口：/NoticeDeleteById
 //    按主键删除的方法名：dropPlan()
 //    接收参数：整型id，根据主键号删除
-    @RequestMapping(value = "/NoticeDeleteById",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticeDeleteById",method = RequestMethod.GET)
     public String dropPlan(){
         return "NoticeDeleteById";
     }
     @ResponseBody
-        @RequestMapping(value = "/NoticeDeleteById/show",method = RequestMethod.DELETE)
-    public Response dropPlan(@Valid NoticePlan delete){
+        @RequestMapping(value = "/noticeDeleteById/show",method = RequestMethod.DELETE)
+    public Response dropPlan(@RequestBody NoticePlan delete){
         noticePlanService.dropPlan(delete.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -107,33 +116,49 @@ public class NoticeController {
 //    按主键修改的接口：/NoticeUpdate
 //    按主键修改的方法名：changePlan()
 //    接收参数：整个表单信息（整型id必填，各参数选填）
-    @RequestMapping(value = "/NoticeUpdate",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticeUpdate",method = RequestMethod.GET)
     public String changePlan(){
         return "NoticeUpdate";
     }
     @ResponseBody
-    @RequestMapping(value = "/NoticeUpdate/show",method = RequestMethod.POST)
-    public Response changePlan(@Valid NoticePlan update,HttpServletRequest request){
-        update.setId(update.getId());
-        update.setGmtModified(new Date());
-        update.setType(update.getType());
-        update.setTitle(update.getTitle());
-        update.setContent(update.getContent());
-        /*List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-        MultipartFile file = null;
-        String filename = null;
-        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/"+update.getProfessor()+"/";
-        file = files.get(0);
-        filename = file.getOriginalFilename();
+    @RequestMapping(value = "/noticeUpdate/show",method = RequestMethod.PUT)
+    public Response changePlan(@RequestBody NoticePlan update,HttpServletRequest request){
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+        MultipartFile file = files.get(0);
+        String filename = file.getOriginalFilename();
+        String suffixname = "";
+        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/";
+        if (!update.getProfessor().isEmpty()){
+            filepath = request.getSession().getServletContext().getContextPath()+"../picture/"+update.getProfessor()+"/";
+        }
+        if (!filename.isEmpty()){
+            suffixname = filename.substring(filename.lastIndexOf("."));
+        }
         if (!file.isEmpty()) {
             try {
                 noticePlanService.uploadFile(file.getBytes(), filepath, filename);
             } catch (Exception e) {
                 // TODO: handle exception
             }
-        }*/
+        }
+        update.setId(update.getId());
+        update.setGmtModified(new Date());
+        update.setType(update.getType());
+        update.setTitle(update.getTitle());
+        if (!filename.isEmpty()){
+            update.setFilepath(filepath+filename);
+        }else {
+            update.setFilepath(null);
+        }
+        if (!filename.isEmpty()){
+            update.setSuffixname(suffixname);
+        }else {
+            update.setSuffixname(null);
+        }
+        update.setContent(update.getContent());
         noticePlanService.changePlan(update);
         NoticePlan selectById = noticePlanService.findPlanById(update.getId());
+
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("notice_plan",selectById);
@@ -144,12 +169,12 @@ public class NoticeController {
 //    按主键查询的接口：/NoticeSelectById
 //    按主键查询的方法名：findPlanById()
 //    接收参数：整型的主键号（保留接口查询，前端不调用此接口）
-    @RequestMapping(value = "/NoticeSelectById",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticeSelectById",method = RequestMethod.GET)
     public String findPlanById(){
         return "NoticeSelectById";
     }
     @ResponseBody
-    @RequestMapping(value = "/NoticeSelectById/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticeSelectById/show",method = RequestMethod.GET)
     public Response findPlanById(@RequestParam("id") Integer id){
         NoticePlan selectById = noticePlanService.findPlanById(id);
         Response response = Responses.successResponse();
@@ -162,18 +187,13 @@ public class NoticeController {
 //    按条件查询接口：/NoticeSelective
 //    按条件查询方法名：findPlanSelective()
 //    接收的参数：前端的各参数，以及四个时间字符串（所有参数可以选填）
-    @RequestMapping(value = "/NoticeSelective",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticeSelective",method = RequestMethod.GET)
     public String findPlanSelective(){
         return "NoticeSelective";
     }
     @ResponseBody
-    @RequestMapping(value = "/NoticeSelective/show",method = RequestMethod.GET)
-    public Response findPlanSelective(@Valid NoticePlan noticePlan,
-                                      @RequestParam ("s_gmtCreate1") String s_gmtCreate1,
-                                      @RequestParam ("s_gmtCreate2") String s_gmtCreate2,
-                                      @RequestParam ("s_gmtModified1") String s_gmtModified1,
-                                      @RequestParam ("s_gmtModified2") String s_gmtModified2
-                                      ) throws ParseException {
+    @RequestMapping(value = "/noticeSelective/show",method = RequestMethod.GET)
+    public Response findPlanSelective(@Valid NoticePlan noticePlan, @Valid Select select) throws ParseException{
         Date gmtCreate1 = null;
         Date gmtCreate2 = null;
         Date gmtModified1 = null;
@@ -181,13 +201,13 @@ public class NoticeController {
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         NoticePlanExample noticePlanExample = new NoticePlanExample();
         NoticePlanExample.Criteria criteria = noticePlanExample.createCriteria();
-        if (s_gmtCreate1 != "" && s_gmtCreate2 != ""){
-            gmtCreate1 =  formatter.parse(s_gmtCreate1);
-            gmtCreate2 =  formatter.parse(s_gmtCreate2);
+        if (select.getS_gmtCreate1() != null && select.getS_gmtCreate1() != "" && select.getS_gmtCreate2() != null && select.getS_gmtCreate2() != ""){
+            gmtCreate1 =  formatter.parse(select.getS_gmtCreate1());
+            gmtCreate2 =  formatter.parse(select.getS_gmtCreate2());
         }
-        if (s_gmtModified1 != "" && s_gmtModified2 != ""){
-            gmtModified1 =  formatter.parse(s_gmtModified1);
-            gmtModified2 =  formatter.parse(s_gmtModified2);
+        if (select.getS_gmtModified1() != null && select.getS_gmtModified1() != "" && select.getS_gmtModified2() != null && select.getS_gmtModified2() != ""){
+            gmtModified1 =  formatter.parse(select.getS_gmtModified1());
+            gmtModified2 =  formatter.parse(select.getS_gmtModified2());
         }
         if(noticePlan.getGmtCreate() != null && noticePlan.getGmtCreate().toString() !=""){
             criteria.andGmtCreateBetween(gmtCreate1,gmtCreate2);
@@ -204,13 +224,10 @@ public class NoticeController {
         if(noticePlan.getType() != null && noticePlan.getType().toString() !=""){
             criteria.andTypeEqualTo(noticePlan.getType());
         }
-        if(noticePlan.getTitle() != null && noticePlan.getTitle() !=""){
-            criteria.andTitleLike('%'+noticePlan.getTitle()+'%');
-        }
-        List<NoticePlan> select = noticePlanService.findPlanSelective(noticePlanExample);
+        List<NoticePlan> selective = noticePlanService.findPlanSelective(noticePlanExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
-        data.put("notice_plan",select);
+        data.put("notice_plan",selective);
         response.setData(data);
         return response;
     }
@@ -218,12 +235,12 @@ public class NoticeController {
 //    站内搜索接口：/SearchInSite
 //    站内搜索方法名：searchInSite()
 //    接收的参数：用户在搜索栏输入的信息（字符串）
-    @RequestMapping(value = "/SearchInSite",method = RequestMethod.GET)
+    @RequestMapping(value = "/searchInSite",method = RequestMethod.GET)
     public String searchInSite(){
         return "SearchInSite";
     }
     @ResponseBody
-    @RequestMapping(value = "/SearchInSite/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/searchInSite/show",method = RequestMethod.GET)
     public Response searchInSite(@RequestParam String string){
         List<NoticePlan> selectInSite = noticePlanService.selectInSite(string);
         Response response = Responses.successResponse();
@@ -236,12 +253,12 @@ public class NoticeController {
 //    上传接口：/Upload
 //    上传方法名：uploadFile()
 //    接收的参数：用户浏览本地文件选择文件上传
-    @RequestMapping(value = "/Upload",method = RequestMethod.GET)
+    @RequestMapping(value = "/upload",method = RequestMethod.GET)
     public String uploadFile(){
         return "Upload";
     }
     @ResponseBody
-    @RequestMapping(value = "/Upload/show",method = RequestMethod.POST)
+    @RequestMapping(value = "/upload/show",method = RequestMethod.POST)
     public Response uploadFile(HttpServletRequest request){
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         String filepath = request.getSession().getServletContext().getContextPath()+"../picture/";
@@ -249,7 +266,6 @@ public class NoticeController {
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
             String filename = file.getOriginalFilename();
-            /*String suffixname = filename.substring(filename.lastIndexOf("."));*/
             if (!file.isEmpty()) {
                 try {
                     noticePlanService.uploadFile(file.getBytes(), filepath, filename);
@@ -258,7 +274,6 @@ public class NoticeController {
                 }
             }
             path.add(filepath+filename);
-            /*System.out.println(path);*/
         }
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -270,12 +285,12 @@ public class NoticeController {
 //    下载接口：/Download
 //    下载方法名：downloadFile()
 //    接收的参数：文件在服务器的相对路径
-    @RequestMapping(value = "/Download",method = RequestMethod.GET)
+    @RequestMapping(value = "/download",method = RequestMethod.GET)
     public String downloadFile(){
         return "Download";
     }
     @ResponseBody
-    @RequestMapping(value = "/Download/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/download/show",method = RequestMethod.GET)
     public String downloadFile(@RequestParam ("filePath") String filePath,
                                HttpServletResponse response){
             File file = new File(filePath);

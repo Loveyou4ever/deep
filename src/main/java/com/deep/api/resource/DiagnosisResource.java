@@ -24,7 +24,7 @@ import java.util.List;
  * date: 2018/2/18  11:46
  */
 @Controller
-public class DiagnosisController {
+public class DiagnosisResource {
     @Resource
     private DiagnosisPlanService diagnosisPlanService;
 

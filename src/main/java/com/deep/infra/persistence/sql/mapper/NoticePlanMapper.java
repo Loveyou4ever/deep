@@ -4,7 +4,6 @@ import com.deep.domain.model.NoticePlan;
 import com.deep.domain.model.NoticePlanExample;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 

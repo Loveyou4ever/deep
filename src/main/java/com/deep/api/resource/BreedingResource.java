@@ -21,7 +21,7 @@ import java.util.List;
  * date: 2018/2/2  12:52
  */
 @Controller
-public class BreedingController {
+public class BreedingResource {
 
     @Resource
     private BreedingPlanService breedingPlanService;

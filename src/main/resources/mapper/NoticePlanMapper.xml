@@ -300,10 +300,10 @@
       <if test="title != null and title != ''" >
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="filepath != null and filepath != ''" >
+      <if test="filepath != ''" >
         filepath = #{filepath,jdbcType=VARCHAR},
       </if>
-      <if test="suffixname != null and suffixname != ''" >
+      <if test="suffixname != ''" >
         suffixname = #{suffixname,jdbcType=VARCHAR},
       </if>
       <if test="content != null and content != ''" >
