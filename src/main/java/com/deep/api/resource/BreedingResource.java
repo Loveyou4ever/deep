@@ -4,6 +4,7 @@ import com.deep.api.response.Response;
 import com.deep.api.response.Responses;
 import com.deep.domain.model.BreedingPlan;
 import com.deep.domain.model.BreedingPlanExample;
+import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.BreedingPlanService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +42,13 @@ public class BreedingResource {
         return "BreedingInsert";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingInsert/show",method = RequestMethod.GET)
-    public Response addPlan(@Valid BreedingPlan insert
-                            ) throws ParseException {
+    @RequestMapping(value = "/BreedingInsert/show",method = RequestMethod.POST)
+    public Response addPlan(@RequestBody BreedingPlan insert) throws ParseException {
         Date breedingT = new Date();
         Date gestationT = new Date();
         Date prenatalIT = new Date();
         Date cubT = new Date();
+        Byte zero = 0;
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         if (insert.getBreedingT().toString() != ""){
             breedingT =  formatter.parse(insert.getBreedingT().toString());
@@ -62,7 +63,6 @@ public class BreedingResource {
             cubT = formatter.parse(insert.getCubT().toString());
         }
 
-        Byte zero = 0;
         insert.setGmtCreate(new Date());
         insert.setFactoryNum(insert.getFactoryNum());
         insert.setBuilding(insert.getBuilding());
@@ -89,10 +89,10 @@ public class BreedingResource {
         criteria.andMEtBEqualTo(insert.getmEtB());
         criteria.andFEtIEqualTo(insert.getfEtI());
         criteria.andFEtBEqualTo(insert.getfEtB());
-        criteria.andBreedingTEqualTo(insert.getBreedingT());
-        criteria.andGestationTEqualTo(insert.getGestationT());
-        criteria.andPrenatalITEqualTo(insert.getPrenatalIT());
-        criteria.andCubTEqualTo(insert.getCubT());
+        criteria.andBreedingTEqualTo(breedingT);
+        criteria.andGestationTEqualTo(gestationT);
+        criteria.andPrenatalITEqualTo(prenatalIT);
+        criteria.andCubTEqualTo(cubT);
         criteria.andQuantityEqualTo(insert.getQuantity());
         criteria.andOperatorEqualTo(insert.getOperator());
         criteria.andRemarkEqualTo(insert.getRemark());
@@ -113,10 +113,10 @@ public class BreedingResource {
         return "BreedingDeleteById";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingDeleteById/show",method = RequestMethod.GET)
-    public Response dropPlan(@RequestParam("id") Integer id){
+    @RequestMapping(value = "/BreedingDeleteById/show",method = RequestMethod.DELETE)
+    public Response dropPlan(@RequestBody BreedingPlan breedingPlan){
         BreedingPlan delete = new BreedingPlan();
-        breedingPlanService.dropPlan(id);
+        breedingPlanService.dropPlan(breedingPlan.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("breeding_plan",delete);
@@ -132,9 +132,8 @@ public class BreedingResource {
         return "BreedingUpdateByProfessor";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingUpdateByProfessor/show",method = RequestMethod.GET)
-    public Response changePlanByProfessor(@Valid BreedingPlan update
-                                          ) throws ParseException {
+    @RequestMapping(value = "/BreedingUpdateByProfessor/show",method = RequestMethod.PUT)
+    public Response changePlanByProfessor(@RequestBody BreedingPlan update) throws ParseException {
         Date breedingT = new Date();
         Date gestationT = new Date();
         Date prenatalIT = new Date();
@@ -213,9 +212,9 @@ public class BreedingResource {
     }
     @ResponseBody
     @RequestMapping(value = "/BreedingSelectById/show",method = RequestMethod.GET)
-    public Response findPlanById(@RequestParam Integer id){
+    public Response findPlanById(@Valid BreedingPlan breedingPlan){
         //查询语句的写法：一定要在声明对象时把值直接赋进去
-        BreedingPlan selectById = breedingPlanService.findPlanById(id);
+        BreedingPlan selectById = breedingPlanService.findPlanById(breedingPlan.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("breeding_plan",selectById);
@@ -231,17 +230,9 @@ public class BreedingResource {
         return "BreedingSelective";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingSelective/show",method = RequestMethod.POST)
+    @RequestMapping(value = "/BreedingSelective/show",method = RequestMethod.GET)
     public Response findPlanSelective(@Valid BreedingPlan breedingPlan,
-                                      @RequestParam("s_breedingT1") String s_breedingT1,
-                                      @RequestParam("s_breedingT2") String s_breedingT2,
-                                      @RequestParam("s_gestationT1") String s_gestationT1,
-                                      @RequestParam("s_gestationT2") String s_gestationT2,
-                                      @RequestParam("s_prenatalIT1") String s_prenatalIT1,
-                                      @RequestParam("s_prenatalIT2") String s_prenatalIT2,
-                                      @RequestParam("s_cubT1") String s_cubT1,
-                                      @RequestParam("s_cubT2") String s_cubT2
-                                      ) throws ParseException {
+                                      @Valid OtherTime otherTime) throws ParseException {
         Date breedingT1 = null;
         Date breedingT2 = null;
         Date gestationT1 = null;
@@ -251,21 +242,21 @@ public class BreedingResource {
         Date cubT1 = null;
         Date cubT2 = null;
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
-        if (s_breedingT1 != "" && s_breedingT2 != ""){
-            breedingT1 =  formatter.parse(s_breedingT1);
-            breedingT2 =  formatter.parse(s_breedingT2);
+        if (otherTime.getS_breedingT1() != null && otherTime.getS_breedingT1() != "" && otherTime.getS_breedingT2() != null && otherTime.getS_breedingT2() != ""){
+            breedingT1 =  formatter.parse(otherTime.getS_breedingT1());
+            breedingT2 =  formatter.parse(otherTime.getS_breedingT2());
         }
-        if (s_gestationT1 != "" && s_gestationT2 != ""){
-            gestationT1 =  formatter.parse(s_gestationT1);
-            gestationT2 =  formatter.parse(s_gestationT2);
+        if (otherTime.getS_gestationT1() != null && otherTime.getS_gestationT1() != "" && otherTime.getS_gestationT2() != null && otherTime.getS_gestationT2() != ""){
+            gestationT1 =  formatter.parse(otherTime.getS_gestationT1());
+            gestationT2 =  formatter.parse(otherTime.getS_gestationT2());
         }
-        if (s_prenatalIT1 != "" && s_prenatalIT2 != ""){
-            prenatalIT1 =  formatter.parse(s_prenatalIT1);
-            prenatalIT2 =  formatter.parse(s_prenatalIT2);
+        if (otherTime.getS_prenatalIT1() != null && otherTime.getS_prenatalIT1() != "" && otherTime.getS_prenatalIT2() != null && otherTime.getS_prenatalIT2() != ""){
+            prenatalIT1 =  formatter.parse(otherTime.getS_prenatalIT1());
+            prenatalIT2 =  formatter.parse(otherTime.getS_prenatalIT2());
         }
-        if (s_cubT1 != "" && s_cubT2 != ""){
-            cubT1 =  formatter.parse(s_cubT1);
-            cubT2 =  formatter.parse(s_cubT2);
+        if (otherTime.getS_cubT1() != null && otherTime.getS_cubT1() != "" && otherTime.getS_cubT2() != null && otherTime.getS_cubT2() != ""){
+            cubT1 =  formatter.parse(otherTime.getS_cubT1());
+            cubT2 =  formatter.parse(otherTime.getS_cubT2());
         }
 
         BreedingPlanExample breedingPlanExample = new BreedingPlanExample();
@@ -342,23 +333,20 @@ public class BreedingResource {
     }
     @ResponseBody
     @RequestMapping(value = "/BreedingSelectByProfessor/show",method = RequestMethod.GET)
-    public Response findPlanSelectByProfessor(@Valid BreedingPlan breedingPlan
-                                      ) throws ParseException {
+    public Response findPlanSelectByProfessor(@Valid BreedingPlan breedingPlan){
         BreedingPlanExample breedingPlanExample = new BreedingPlanExample();
         BreedingPlanExample.Criteria criteria = breedingPlanExample.createCriteria();
-
+        Byte notPassed = 0;
         if(breedingPlan.getId() != null && breedingPlan.getId().toString() !=""){
             criteria.andIdEqualTo(breedingPlan.getId());
         }
         if(breedingPlan.getProfessor() != null && breedingPlan.getProfessor() !=""){
             criteria.andProfessorEqualTo(breedingPlan.getProfessor());
         }
-        if(breedingPlan.getIsPass() != null && breedingPlan.getIsPass().toString() !=""){
-            criteria.andIsPassEqualTo(breedingPlan.getIsPass());
-        }
         if(breedingPlan.getUpassReason() != null && breedingPlan.getUpassReason() !=""){
             criteria.andUpassReasonLike(breedingPlan.getUpassReason());
         }
+        criteria.andIsPassEqualTo(notPassed);//显示为通过技术审核
         List<BreedingPlan> select = breedingPlanService.findPlanSelective(breedingPlanExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -376,20 +364,17 @@ public class BreedingResource {
     }
     @ResponseBody
     @RequestMapping(value = "/BreedingSelectBySupervisor/show",method = RequestMethod.GET)
-    public Response findPlanSelectBySupervisor(@Valid BreedingPlan breedingPlan
-                                               ) throws ParseException {
+    public Response findPlanSelectBySupervisor(@Valid BreedingPlan breedingPlan){
         BreedingPlanExample breedingPlanExample = new BreedingPlanExample();
         BreedingPlanExample.Criteria criteria = breedingPlanExample.createCriteria();
-
+        Byte notPassed1 = 0;
         if(breedingPlan.getId() != null && breedingPlan.getId().toString() !=""){
             criteria.andIdEqualTo(breedingPlan.getId());
         }
         if(breedingPlan.getSupervisor() != null && breedingPlan.getSupervisor() !=""){
             criteria.andSupervisorEqualTo(breedingPlan.getSupervisor());
         }
-        if(breedingPlan.getIsPass1() != null && breedingPlan.getIsPass1().toString() !=""){
-            criteria.andIsPassEqualTo(breedingPlan.getIsPass1());
-        }
+        criteria.andIsPassEqualTo(notPassed1);
         List<BreedingPlan> select = breedingPlanService.findPlanSelective(breedingPlanExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();

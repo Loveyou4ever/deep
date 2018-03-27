@@ -4,7 +4,7 @@ import com.deep.api.response.Response;
 import com.deep.api.response.Responses;
 import com.deep.domain.model.NoticePlan;
 import com.deep.domain.model.NoticePlanExample;
-import com.deep.domain.model.Select;
+import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.NoticePlanService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -193,7 +193,7 @@ public class NoticeResource {
     }
     @ResponseBody
     @RequestMapping(value = "/noticeSelective/show",method = RequestMethod.GET)
-    public Response findPlanSelective(@Valid NoticePlan noticePlan, @Valid Select select) throws ParseException{
+    public Response findPlanSelective(@Valid NoticePlan noticePlan, @Valid OtherTime otherTime) throws ParseException{
         Date gmtCreate1 = null;
         Date gmtCreate2 = null;
         Date gmtModified1 = null;
@@ -201,13 +201,13 @@ public class NoticeResource {
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         NoticePlanExample noticePlanExample = new NoticePlanExample();
         NoticePlanExample.Criteria criteria = noticePlanExample.createCriteria();
-        if (select.getS_gmtCreate1() != null && select.getS_gmtCreate1() != "" && select.getS_gmtCreate2() != null && select.getS_gmtCreate2() != ""){
-            gmtCreate1 =  formatter.parse(select.getS_gmtCreate1());
-            gmtCreate2 =  formatter.parse(select.getS_gmtCreate2());
+        if (otherTime.getS_gmtCreate1() != null && otherTime.getS_gmtCreate1() != "" && otherTime.getS_gmtCreate2() != null && otherTime.getS_gmtCreate2() != ""){
+            gmtCreate1 =  formatter.parse(otherTime.getS_gmtCreate1());
+            gmtCreate2 =  formatter.parse(otherTime.getS_gmtCreate2());
         }
-        if (select.getS_gmtModified1() != null && select.getS_gmtModified1() != "" && select.getS_gmtModified2() != null && select.getS_gmtModified2() != ""){
-            gmtModified1 =  formatter.parse(select.getS_gmtModified1());
-            gmtModified2 =  formatter.parse(select.getS_gmtModified2());
+        if (otherTime.getS_gmtModified1() != null && otherTime.getS_gmtModified1() != "" && otherTime.getS_gmtModified2() != null && otherTime.getS_gmtModified2() != ""){
+            gmtModified1 =  formatter.parse(otherTime.getS_gmtModified1());
+            gmtModified2 =  formatter.parse(otherTime.getS_gmtModified2());
         }
         if(noticePlan.getGmtCreate() != null && noticePlan.getGmtCreate().toString() !=""){
             criteria.andGmtCreateBetween(gmtCreate1,gmtCreate2);

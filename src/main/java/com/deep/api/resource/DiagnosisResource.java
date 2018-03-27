@@ -6,10 +6,7 @@ import com.deep.domain.model.DiagnosisPlanExample;
 import com.deep.domain.model.DiagnosisPlanWithBLOBs;
 import com.deep.domain.service.DiagnosisPlanService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -43,16 +40,15 @@ public class DiagnosisResource {
         return "DiagnosisInsert";
     }
     @ResponseBody
-    @RequestMapping(value = "/DiagnosisInsert/show",method = RequestMethod.GET)
-    public Response addPlan(@Valid DiagnosisPlanWithBLOBs insert
-                            ) throws ParseException {
+    @RequestMapping(value = "/DiagnosisInsert/show",method = RequestMethod.POST)
+    public Response addPlan(@RequestBody DiagnosisPlanWithBLOBs insert) throws ParseException {
         Date diagnosisT = new Date();
+        Byte zero = 0;
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         if (insert.getDiagnosisT().toString() != ""){
             diagnosisT =  formatter.parse(insert.getDiagnosisT().toString());
         }
 
-        Byte zero = 0;
         insert.setGmtCreate(new Date());
         insert.setFactoryNum(insert.getFactoryNum());
         insert.setBuilding(insert.getBuilding());
@@ -72,6 +68,7 @@ public class DiagnosisResource {
         criteria.andFactoryNumEqualTo(insert.getFactoryNum());
         criteria.andBuildingEqualTo(insert.getBuilding());
         criteria.andEtBEqualTo(insert.getEtB());
+        insert.setDiagnosisT(diagnosisT);
         criteria.andOperatorEqualTo(insert.getOperator());
         criteria.andRemarkEqualTo(insert.getRemark());
         List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
@@ -91,10 +88,10 @@ public class DiagnosisResource {
         return "DiagnosisDeleteById";
     }
     @ResponseBody
-    @RequestMapping(value = "/DiagnosisDeleteById/show",method = RequestMethod.GET)
-    public Response dropPlan(@RequestParam("id") Integer id){
+    @RequestMapping(value = "/DiagnosisDeleteById/show",method = RequestMethod.DELETE)
+    public Response dropPlan(@RequestBody DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs){
         DiagnosisPlanWithBLOBs delete = new DiagnosisPlanWithBLOBs();
-        diagnosisPlanService.dropPlan(id);
+        diagnosisPlanService.dropPlan(diagnosisPlanWithBLOBs.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("diagnosis_plan",delete);
@@ -110,9 +107,8 @@ public class DiagnosisResource {
         return "DiagnosisUpdateByProfessor";
     }
     @ResponseBody
-    @RequestMapping(value = "/DiagnosisUpdateByProfessor/show",method = RequestMethod.GET)
-    public Response changePlanByProfessor(@Valid DiagnosisPlanWithBLOBs update
-                                          ) throws ParseException {
+    @RequestMapping(value = "/DiagnosisUpdateByProfessor/show",method = RequestMethod.PUT)
+    public Response changePlanByProfessor(@RequestBody DiagnosisPlanWithBLOBs update) throws ParseException {
         Date diagnosisT = new Date();
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         if (update.getDiagnosisT().toString() != ""){
@@ -149,12 +145,12 @@ public class DiagnosisResource {
         return "DiagnosisUpdateBySupervisor";
     }
     @ResponseBody
-    @RequestMapping(value = "/DiagnosisUpdateBySupervisor/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/DiagnosisUpdateBySupervisor/show",method = RequestMethod.PUT)
     public Response changePlanBySupervisor(@Valid DiagnosisPlanWithBLOBs update){
         update.setId(update.getId());
         update.setGmtSupervised(new Date());
         update.setSupervisor(update.getSupervisor());
-        update.setIsPass1(update.getIsPass());
+        update.setIsPass1(update.getIsPass1());
 
         diagnosisPlanService.changePlanBySupervisor(update);
         DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(update.getId());
@@ -174,9 +170,9 @@ public class DiagnosisResource {
     }
     @ResponseBody
     @RequestMapping(value = "/DiagnosisSelectById/show",method = RequestMethod.GET)
-    public Response findPlanById(@RequestParam("id") Integer id){
+    public Response findPlanById(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs){
         //查询语句的写法：一定要在声明对象时把值直接赋进去
-        DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(id);
+        DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(diagnosisPlanWithBLOBs.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("diagnosis_plan",selectById);
