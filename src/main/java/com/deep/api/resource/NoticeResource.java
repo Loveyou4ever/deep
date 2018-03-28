@@ -35,7 +35,7 @@ public class NoticeResource {
         return "Hello NoticePlan!";
     }
 
-//    按主键删除的接口：/NoticeInsert
+//    按主键删除的接口：/noticeInsert
 //    按主键删除的方法名：addPlan()
 //    接收参数：整个表单信息（所有参数必填）
 //    参数类型为：String professor;Byte type;String title;String content;
@@ -95,7 +95,7 @@ public class NoticeResource {
         return response;
     }
 
-//    按主键删除的接口：/NoticeDeleteById
+//    按主键删除的接口：/noticeDeleteById
 //    按主键删除的方法名：dropPlan()
 //    接收参数：整型id，根据主键号删除
     @RequestMapping(value = "/noticeDeleteById",method = RequestMethod.GET)
@@ -113,7 +113,7 @@ public class NoticeResource {
         return response;
     }
 
-//    按主键修改的接口：/NoticeUpdate
+//    按主键修改的接口：/noticeUpdate
 //    按主键修改的方法名：changePlan()
 //    接收参数：整个表单信息（整型id必填，各参数选填）
     @RequestMapping(value = "/noticeUpdate",method = RequestMethod.GET)
@@ -166,7 +166,7 @@ public class NoticeResource {
         return response;
     }
 
-//    按主键查询的接口：/NoticeSelectById
+//    按主键查询的接口：/noticeSelectById
 //    按主键查询的方法名：findPlanById()
 //    接收参数：整型的主键号（保留接口查询，前端不调用此接口）
     @RequestMapping(value = "/noticeSelectById",method = RequestMethod.GET)
@@ -184,7 +184,7 @@ public class NoticeResource {
         return response;
     }
 
-//    按条件查询接口：/NoticeSelective
+//    按条件查询接口：/noticeSelective
 //    按条件查询方法名：findPlanSelective()
 //    接收的参数：前端的各参数，以及四个时间字符串（所有参数可以选填）
     @RequestMapping(value = "/noticeSelective",method = RequestMethod.GET)
@@ -232,7 +232,7 @@ public class NoticeResource {
         return response;
     }
 
-//    站内搜索接口：/SearchInSite
+//    站内搜索接口：/searchInSite
 //    站内搜索方法名：searchInSite()
 //    接收的参数：用户在搜索栏输入的信息（字符串）
     @RequestMapping(value = "/searchInSite",method = RequestMethod.GET)
@@ -241,8 +241,8 @@ public class NoticeResource {
     }
     @ResponseBody
     @RequestMapping(value = "/searchInSite/show",method = RequestMethod.GET)
-    public Response searchInSite(@RequestParam String string){
-        List<NoticePlan> selectInSite = noticePlanService.selectInSite(string);
+    public Response searchInSite(@Valid OtherTime otherTime){
+        List<NoticePlan> selectInSite = noticePlanService.selectInSite(otherTime.getSearch_string());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
         data.put("notice_plan",selectInSite);
@@ -250,7 +250,7 @@ public class NoticeResource {
         return response;
     }
 
-//    上传接口：/Upload
+//    上传接口：/upload
 //    上传方法名：uploadFile()
 //    接收的参数：用户浏览本地文件选择文件上传
     @RequestMapping(value = "/upload",method = RequestMethod.GET)
@@ -259,9 +259,10 @@ public class NoticeResource {
     }
     @ResponseBody
     @RequestMapping(value = "/upload/show",method = RequestMethod.POST)
-    public Response uploadFile(HttpServletRequest request){
+    public Response uploadFile(@RequestBody NoticePlan noticePlan,
+                               HttpServletRequest request){
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/";
+        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/rich_text_format";
         List<String> path = new ArrayList<>();
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
@@ -282,7 +283,7 @@ public class NoticeResource {
         return response;
     }
 
-//    下载接口：/Download
+//    下载接口：/download
 //    下载方法名：downloadFile()
 //    接收的参数：文件在服务器的相对路径
     @RequestMapping(value = "/download",method = RequestMethod.GET)

@@ -28,21 +28,21 @@ public class BreedingResource {
     private BreedingPlanService breedingPlanService;
 
     @ResponseBody
-    @RequestMapping(value = "/BreedingPlan",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingPlan",method = RequestMethod.GET)
     public String helloBreed() {
         return "Hello BreedingPlan!";
     }
 
-//    按主键删除的接口：/BreedingInsert
+//    按主键删除的接口：/breedingInsert
 //    按主键删除的方法名：addPlan()
 //    接收参数：整个表单信息（所有参数必填）
 //    参数类型为：Long factoryNum;String building;String mEtI;String mEtB;String fEtI;String fEtB;Date breedingT; Date gestationT;Date prenatalIT;Date cubT;Integer quantity;String operator;String remark；
-    @RequestMapping(value = "/BreedingInsert",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingInsert",method = RequestMethod.GET)
     public String addPlan(){
         return "BreedingInsert";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingInsert/show",method = RequestMethod.POST)
+    @RequestMapping(value = "/breedingInsert/show",method = RequestMethod.POST)
     public Response addPlan(@RequestBody BreedingPlan insert) throws ParseException {
         Date breedingT = new Date();
         Date gestationT = new Date();
@@ -105,15 +105,15 @@ public class BreedingResource {
         return response;
     }
 
-//    按主键删除的接口：/BreedingDeleteById
+//    按主键删除的接口：/breedingDeleteById
 //    按主键删除的方法名：dropPlan()
 //    接收参数：整型id，根据主键号删除
-    @RequestMapping(value = "/BreedingDeleteById",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingDeleteById",method = RequestMethod.GET)
     public String dropPlan(){
         return "BreedingDeleteById";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingDeleteById/show",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/breedingDeleteById/show",method = RequestMethod.DELETE)
     public Response dropPlan(@RequestBody BreedingPlan breedingPlan){
         BreedingPlan delete = new BreedingPlan();
         breedingPlanService.dropPlan(breedingPlan.getId());
@@ -124,15 +124,15 @@ public class BreedingResource {
         return response;
     }
 
-//    专家使用按主键修改的接口：/BreedingUpdateByProfessor
+//    专家使用按主键修改的接口：/breedingUpdateByProfessor
 //    专家使用按主键修改的方法名：changePlanByProfessor()
 //    专家使用接收参数：整个表单类型
-    @RequestMapping(value = "/BreedingUpdateByProfessor",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingUpdateByProfessor",method = RequestMethod.GET)
     public String changePlanByProfessor(){
         return "BreedingUpdateByProfessor";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingUpdateByProfessor/show",method = RequestMethod.PUT)
+    @RequestMapping(value = "/breedingUpdateByProfessor/show",method = RequestMethod.PUT)
     public Response changePlanByProfessor(@RequestBody BreedingPlan update) throws ParseException {
         Date breedingT = new Date();
         Date gestationT = new Date();
@@ -151,7 +151,6 @@ public class BreedingResource {
         if (update.getCubT().toString() != ""){
             cubT = formatter.parse(update.getCubT().toString());
         }
-
         update.setId(update.getId());
         update.setGmtModified(new Date());
         update.setFactoryNum(update.getFactoryNum());
@@ -179,15 +178,15 @@ public class BreedingResource {
         return response;
     }
 
-//    监督者使用按主键修改的接口：/BreedingUpdateBySupervisor
+//    监督者使用按主键修改的接口：/breedingUpdateBySupervisor
 //    监督者使用按主键修改的方法名：changePlanBySupervisor()
 //    监督者使用接收参数：整个表单信息（整型id必填，各参数选填）
-    @RequestMapping(value = "/BreedingUpdateBySupervisor",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingUpdateBySupervisor",method = RequestMethod.GET)
     public String changePlanBySupervisor(){
         return "BreedingUpdateBySupervisor";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingUpdateBySupervisor/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingUpdateBySupervisor/show",method = RequestMethod.GET)
     public Response changePlanBySupervisor(@Valid BreedingPlan update) {
         update.setId(update.getId());
         update.setGmtSupervised(new Date());
@@ -203,15 +202,15 @@ public class BreedingResource {
         return response;
     }
 
-//    按主键查询的接口：/BreedingSelectById
+//    按主键查询的接口：/breedingSelectById
 //    按主键查询的方法名：findPlanById()
 //    接收参数：整型的主键号（保留接口查询，前端不调用此接口）
-    @RequestMapping(value = "/BreedingSelectById",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelectById",method = RequestMethod.GET)
     public String findPlanById(){
         return "BreedingSelectById";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingSelectById/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelectById/show",method = RequestMethod.GET)
     public Response findPlanById(@Valid BreedingPlan breedingPlan){
         //查询语句的写法：一定要在声明对象时把值直接赋进去
         BreedingPlan selectById = breedingPlanService.findPlanById(breedingPlan.getId());
@@ -222,15 +221,15 @@ public class BreedingResource {
         return response;
     }
 
-//    按条件查询接口：/BreedingSelective
+//    按条件查询接口：/breedingSelective
 //    按条件查询方法名：findPlanSelective()
 //    接收的参数：前端的各参数，以及八个("s_breedingT1")("s_breedingT2")("s_gestationT1")("s_gestationT2")("s_prenatalIT1")("s_prenatalIT2")("s_cubT1")("s_cubT2")时间字符串（所有参数可以选填）
-    @RequestMapping(value = "/BreedingSelective",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelective",method = RequestMethod.GET)
     public String findPlanSelective(){
         return "BreedingSelective";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingSelective/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelective/show",method = RequestMethod.GET)
     public Response findPlanSelective(@Valid BreedingPlan breedingPlan,
                                       @Valid OtherTime otherTime) throws ParseException {
         Date breedingT1 = null;
@@ -324,15 +323,15 @@ public class BreedingResource {
         return response;
     }
 
-//    供技术审核查询信息
+//    供技术审核查询信息:/breedingSelectByProfessor
 //    供技术审核查询方法名：findPlanSelectByProfessor()
 //    接收的参数：前端的各参数，（所有参数可以选填）
-    @RequestMapping(value = "/BreedingSelectByProfessor",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelectByProfessor",method = RequestMethod.GET)
     public String findPlanSelectByProfessor(){
         return "BreedingSelectByProfessor";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingSelectByProfessor/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelectByProfessor/show",method = RequestMethod.GET)
     public Response findPlanSelectByProfessor(@Valid BreedingPlan breedingPlan){
         BreedingPlanExample breedingPlanExample = new BreedingPlanExample();
         BreedingPlanExample.Criteria criteria = breedingPlanExample.createCriteria();
@@ -358,12 +357,12 @@ public class BreedingResource {
 //    供监督者查询信息
 //    供监督者查询方法名：findPlanSelectBySupervisor()
 //    接收的参数：前端的各参数，（所有参数可以选填）
-    @RequestMapping(value = "/BreedingSelectBySupervisor",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelectBySupervisor",method = RequestMethod.GET)
     public String findPlanSelectBySupervisor(){
         return "BreedingSelectSupervisor";
     }
     @ResponseBody
-    @RequestMapping(value = "/BreedingSelectBySupervisor/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/breedingSelectBySupervisor/show",method = RequestMethod.GET)
     public Response findPlanSelectBySupervisor(@Valid BreedingPlan breedingPlan){
         BreedingPlanExample breedingPlanExample = new BreedingPlanExample();
         BreedingPlanExample.Criteria criteria = breedingPlanExample.createCriteria();

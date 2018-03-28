@@ -7,6 +7,8 @@ import java.io.Serializable;
  */
 
 public class OtherTime implements Serializable {
+    private String search_string;
+
     private String s_gmtCreate1;
 
     private String s_gmtCreate2;
@@ -31,7 +33,13 @@ public class OtherTime implements Serializable {
 
     private String s_cubT2;
 
-    private String diagnosisT;
+    private String s_diagnosisT1;
+
+    private String s_diagnosisT2;
+
+    private String s_nutritionT1;
+
+    private String s_nutritionT2;
 
     private static final long serialVersionUID = 1L;
 
@@ -131,11 +139,44 @@ public class OtherTime implements Serializable {
         this.s_cubT2 = s_cubT2;
     }
 
-    public String getDiagnosisT() {
-        return diagnosisT;
+    public String getS_diagnosisT1() {
+        return s_diagnosisT1;
     }
 
-    public void setDiagnosisT(String diagnosisT) {
-        this.diagnosisT = diagnosisT;
+    public void setS_diagnosisT1(String s_diagnosisT1) {
+        this.s_diagnosisT1 = s_diagnosisT1;
     }
+
+    public String getS_diagnosisT2() {
+        return s_diagnosisT2;
+    }
+
+    public void setS_diagnosisT2(String s_diagnosisT2) {
+        this.s_diagnosisT2 = s_diagnosisT2;
+    }
+
+    public String getSearch_string() {
+        return search_string;
+    }
+
+    public void setSearch_string(String search_string) {
+        this.search_string = search_string;
+    }
+
+    public String getS_nutritionT1() {
+        return s_nutritionT1;
+    }
+
+    public void setS_nutritionT1(String s_nutritionT1) {
+        this.s_nutritionT1 = s_nutritionT1;
+    }
+
+    public String getS_nutritionT2() {
+        return s_nutritionT2;
+    }
+
+    public void setS_nutritionT2(String s_nutritionT2) {
+        this.s_nutritionT2 = s_nutritionT2;
+    }
+
 }
