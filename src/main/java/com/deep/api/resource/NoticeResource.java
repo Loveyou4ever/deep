@@ -7,6 +7,8 @@ import com.deep.domain.model.NoticePlanExample;
 import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.NoticePlanService;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -45,7 +47,11 @@ public class NoticeResource {
     }
     @ResponseBody
     @RequestMapping(value = "/noticeInsert/show",method = RequestMethod.POST)
-    public Response addPlan(@Valid NoticePlan insert, HttpServletRequest request){
+    public Response addPlan(@Valid NoticePlan insert, HttpServletRequest request,BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            Response response = Responses.errorResponse("信息发布失败");
+            return response;
+        }
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         String filepath = request.getSession().getServletContext().getContextPath()+"../"+"picture/"+insert.getProfessor()+"/";
         MultipartFile file = files.get(0);
@@ -61,10 +67,13 @@ public class NoticeResource {
                 // TODO: handle exception
             }
         }
+
         insert.setGmtCreate(new Date());
-        insert.setProfessor(insert.getProfessor());
-        insert.setType(insert.getType());
-        insert.setTitle(insert.getTitle());
+        if (!insert.getProfessor().isEmpty()){
+            insert.setProfessor(insert.getProfessor());
+        }else {
+            insert.setProfessor("Unknown");
+        }
         if (!filename.isEmpty()){
             insert.setFilepath(filepath+filename);
         }else {
@@ -77,20 +86,9 @@ public class NoticeResource {
         }
         insert.setContent(insert.getContent());
         noticePlanService.addPlan(insert);
-
-        NoticePlanExample insertExample = new NoticePlanExample();
-        NoticePlanExample.Criteria criteria = insertExample.createCriteria();
-        criteria.andTitleEqualTo(insert.getTitle());
-        criteria.andTypeEqualTo(insert.getType());
-        criteria.andProfessorEqualTo(insert.getProfessor());
-        if (!filename.isEmpty()){
-            criteria.andFilepathEqualTo(filepath+filename);
-            criteria.andSuffixnameEqualTo(suffixname);
-        }
-        List<NoticePlan> select = noticePlanService.findPlanSelective(insertExample);
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
-        data.put("notice_plan",select);
+        data.put("notice_plan",insert);
         response.setData(data);
         return response;
     }
@@ -121,8 +119,8 @@ public class NoticeResource {
         return "NoticeUpdate";
     }
     @ResponseBody
-    @RequestMapping(value = "/noticeUpdate/show",method = RequestMethod.PUT)
-    public Response changePlan(@RequestBody NoticePlan update,HttpServletRequest request){
+    @RequestMapping(value = "/noticeUpdate/show",method = RequestMethod.POST)
+    public Response changePlan(@Valid NoticePlan update,HttpServletRequest request){
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         MultipartFile file = files.get(0);
         String filename = file.getOriginalFilename();
@@ -141,10 +139,12 @@ public class NoticeResource {
                 // TODO: handle exception
             }
         }
-        update.setId(update.getId());
         update.setGmtModified(new Date());
-        update.setType(update.getType());
-        update.setTitle(update.getTitle());
+        if (!update.getProfessor().isEmpty()){
+            update.setProfessor(update.getProfessor());
+        }else {
+            update.setProfessor("Unknown");
+        }
         if (!filename.isEmpty()){
             update.setFilepath(filepath+filename);
         }else {
@@ -155,7 +155,6 @@ public class NoticeResource {
         }else {
             update.setSuffixname(null);
         }
-        update.setContent(update.getContent());
         noticePlanService.changePlan(update);
         NoticePlan selectById = noticePlanService.findPlanById(update.getId());
 

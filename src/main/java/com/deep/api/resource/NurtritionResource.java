@@ -46,60 +46,28 @@ public class NurtritionResource {
     }
     @ResponseBody
     @RequestMapping(value = "/nutritionInsert/show",method = RequestMethod.POST)
-    public Response addPlan(@RequestBody NutritionPlanWithBLOBs insert
-                            ) throws ParseException {
+    public Response addPlan(@RequestBody NutritionPlanWithBLOBs insert,
+                            BindingResult bindingResult) throws ParseException {
+        if (bindingResult.hasErrors()) {
+            Response response = Responses.errorResponse("营养实施档案录入失败");
+            return response;
+        }
         Date nutritionT = new Date();
+        Byte zero = 0;
         java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
         if (insert.getNutritionT().toString() != "") {
             nutritionT =  formatter.parse(insert.getNutritionT().toString());
         }
-        Byte zero = 0;
+
         insert.setGmtCreate(new Date());
-        insert.setFactoryNum(insert.getFactoryNum());
-        insert.setBuilding(insert.getBuilding());
         insert.setNutritionT(nutritionT);
-        insert.setQuantity(insert.getQuantity());
-        insert.setAverage(insert.getAverage());
-        insert.setPeriod(insert.getPeriod());
-        insert.setWater(insert.getWater());
-        insert.setOperator(insert.getOperator());
-        insert.setRemark(insert.getRemark());
         insert.setIsPass(zero);
         insert.setIsPass1(zero);
-        insert.setMaterialA(insert.getMaterialA());
-        insert.setMaterialM(insert.getMaterialM());
-        insert.setMaterialO(insert.getMaterialO());
-        insert.setMaterialWM(insert.getMaterialWM());
-        insert.setMaterialWO(insert.getMaterialWO());
-        insert.setRoughageP(insert.getRoughageP());
-        insert.setRoughageD(insert.getRoughageD());
-        insert.setRoughageWP(insert.getRoughageWP());
-        insert.setRoughageWD(insert.getRoughageWD());
-        insert.setRoughageWO(insert.getRoughageWO());
-        insert.setPickingM(insert.getPickingM());
-        insert.setPickingR(insert.getPickingR());
-        insert.setPickingO(insert.getPickingO());
         nutritionPlanService.addPlan(insert);
-
-        NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
-        NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
-        criteria.andFactoryNumEqualTo(insert.getFactoryNum());
-        criteria.andBuildingEqualTo(insert.getBuilding());
-        criteria.andNutritionTEqualTo(nutritionT);
-        criteria.andQuantityEqualTo(insert.getQuantity());
-        criteria.andAverageEqualTo(insert.getAverage());
-        criteria.andPeriodEqualTo(insert.getPeriod());
-        criteria.andWaterEqualTo(insert.getWater());
-        criteria.andOperatorEqualTo(insert.getOperator());
-        criteria.andRemarkEqualTo(insert.getRemark());
-        criteria.andIsPassEqualTo(insert.getIsPass());
-        criteria.andIsPass1EqualTo(insert.getIsPass1());
-
-        List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample);
 
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
-        data.put("nutrition_plan",select);
+        data.put("nutrition_plan",insert);
         response.setData(data);
         return response;
     }

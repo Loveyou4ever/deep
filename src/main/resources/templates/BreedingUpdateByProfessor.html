@@ -6,7 +6,7 @@
 </head>
 <body>
 <a>选择性修改信息 ：</a>
-<form action="/breedingUpdateByProfessor/show" method="get">
+<form action="/breedingUpdateByProfessor/show" method="post">
     <table>
         <tr>
             <td><label>记录号</label></td>
@@ -65,14 +65,13 @@
             <td><input type="text" id="remark" name="remark" /></td>
         </tr>
         <tr>
-            <td><label>是否通过审核（11表示通过 00表示不通过）</label></td>
+            <td><label>是否通过审核（1表示通过 0表示不通过）</label></td>
             <td><input type="text" id="isPass" name="isPass" /></td>
         </tr>
         <tr>
             <td><label>未通过审核原因</label></td>
             <td><input type="text" id="upassReason" name="upassReason" /></td>
         </tr>
-
         <tr>
             <td><input type="submit" id="submit" value="提交"/></td>
         </tr>

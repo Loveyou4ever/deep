@@ -141,7 +141,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.deep.domain.model.NoticePlan" >
+  <insert id="insert" parameterType="com.deep.domain.model.NoticePlan"
+          useGeneratedKeys="true" keyProperty="id">
     insert into notice_plan (id, gmt_create, gmt_modified, 
       professor, type, title, 
       filepath, suffixname, content
@@ -300,10 +301,10 @@
       <if test="title != null and title != ''" >
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="filepath != ''" >
+      <if test="filepath != null and filepath != ''" >
         filepath = #{filepath,jdbcType=VARCHAR},
       </if>
-      <if test="suffixname != ''" >
+      <if test="suffixname != null and suffixname != ''" >
         suffixname = #{suffixname,jdbcType=VARCHAR},
       </if>
       <if test="content != null and content != ''" >

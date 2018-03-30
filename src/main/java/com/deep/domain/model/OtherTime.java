@@ -9,6 +9,16 @@ import java.io.Serializable;
 public class OtherTime implements Serializable {
     private String search_string;
 
+    private String s_breedingT;
+
+    private String s_gestationT;
+
+    private String s_prenatalIT;
+
+    private String s_cubT;
+
+    private String s_diagnosisT;
+
     private String s_gmtCreate1;
 
     private String s_gmtCreate2;
@@ -42,6 +52,46 @@ public class OtherTime implements Serializable {
     private String s_nutritionT2;
 
     private static final long serialVersionUID = 1L;
+
+    public String getS_breedingT() {
+        return s_breedingT;
+    }
+
+    public void setS_breedingT(String s_breedingT) {
+        this.s_breedingT = s_breedingT;
+    }
+
+    public String getS_gestationT() {
+        return s_gestationT;
+    }
+
+    public void setS_gestationT(String s_gestationT) {
+        this.s_gestationT = s_gestationT;
+    }
+
+    public String getS_prenatalIT() {
+        return s_prenatalIT;
+    }
+
+    public void setS_prenatalIT(String s_prenatalIT) {
+        this.s_prenatalIT = s_prenatalIT;
+    }
+
+    public String getS_cubT() {
+        return s_cubT;
+    }
+
+    public void setS_cubT(String s_cubT) {
+        this.s_cubT = s_cubT;
+    }
+
+    public String getS_diagnosisT() {
+        return s_diagnosisT;
+    }
+
+    public void setS_diagnosisT(String s_diagnosisT) {
+        this.s_diagnosisT = s_diagnosisT;
+    }
 
     public String getS_gmtCreate1() {
         return s_gmtCreate1;

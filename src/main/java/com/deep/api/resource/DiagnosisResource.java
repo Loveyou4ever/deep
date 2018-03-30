@@ -7,6 +7,7 @@ import com.deep.domain.model.DiagnosisPlanWithBLOBs;
 import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.DiagnosisPlanService;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -42,42 +43,31 @@ public class DiagnosisResource {
     }
     @ResponseBody
     @RequestMapping(value = "/diagnosisInsert/show",method = RequestMethod.POST)
-    public Response addPlan(@RequestBody DiagnosisPlanWithBLOBs insert) throws ParseException {
-        Date diagnosisT = new Date();
-        Byte zero = 0;
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
-        if (insert.getDiagnosisT().toString() != ""){
-            diagnosisT =  formatter.parse(insert.getDiagnosisT().toString());
+    public Response addPlan(@Valid @RequestBody DiagnosisPlanWithBLOBs insert,
+                            @Valid @RequestBody OtherTime otherTime,
+                            BindingResult bindingResult) throws ParseException {
+        if (bindingResult.hasErrors()) {
+            Response response = Responses.errorResponse("诊疗实施档案录入失败");
+            return response;
+        }else {
+            Byte zero = 0;
+            Date diagnosisT = new Date();
+            java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+            if (!otherTime.getS_diagnosisT().isEmpty()){
+                diagnosisT =  formatter.parse(otherTime.getS_diagnosisT());
+            }
+            insert.setGmtCreate(new Date());
+            insert.setDiagnosisT(diagnosisT);
+            insert.setIsPass(zero);
+            insert.setIsPass1(zero);
+            diagnosisPlanService.addPlan(insert);
+
+            Response response = Responses.successResponse();
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("diagnosis_plan",insert);
+            response.setData(data);
+            return response;
         }
-        insert.setGmtCreate(new Date());
-        insert.setFactoryNum(insert.getFactoryNum());
-        insert.setBuilding(insert.getBuilding());
-        insert.setDiagnosisT(diagnosisT);
-        insert.setEtB(insert.getEtB());
-        insert.setOperator(insert.getOperator());
-        insert.setRemark(insert.getRemark());
-        insert.setIsPass(zero);
-        insert.setIsPass1(zero);
-        insert.setDiagnosisC(insert.getDiagnosisC());
-        insert.setDiagnosisM(insert.getDiagnosisM());
-        insert.setDrugQ(insert.getDrugQ());
-        diagnosisPlanService.addPlan(insert);
-
-        DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
-        DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
-        criteria.andFactoryNumEqualTo(insert.getFactoryNum());
-        criteria.andBuildingEqualTo(insert.getBuilding());
-        criteria.andEtBEqualTo(insert.getEtB());
-        insert.setDiagnosisT(diagnosisT);
-        criteria.andOperatorEqualTo(insert.getOperator());
-        criteria.andRemarkEqualTo(insert.getRemark());
-        List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
-
-        Response response = Responses.successResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("diagnosis_plan",select);
-        response.setData(data);
-        return response;
     }
 
 //    按主键删除的接口：/diagnosisDeleteById
@@ -108,33 +98,29 @@ public class DiagnosisResource {
     }
     @ResponseBody
     @RequestMapping(value = "/diagnosisUpdateByProfessor/show",method = RequestMethod.PUT)
-    public Response changePlanByProfessor(@RequestBody DiagnosisPlanWithBLOBs update) throws ParseException {
-        Date diagnosisT = new Date();
-        java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
-        if (update.getDiagnosisT().toString() != ""){
-            diagnosisT =  formatter.parse(update.getDiagnosisT().toString());
-        }
-        update.setId(update.getId());
-        update.setGmtModified(new Date());
-        update.setFactoryNum(update.getFactoryNum());
-        update.setDiagnosisT(diagnosisT);
-        update.setBuilding(update.getBuilding());
-        update.setEtB(update.getEtB());
-        update.setProfessor(update.getProfessor());
-        update.setRemark(update.getRemark());
-        update.setIsPass(update.getIsPass());
-        update.setUpassReason(update.getUpassReason());
-        update.setDiagnosisC(update.getDiagnosisC());
-        update.setDiagnosisM(update.getDiagnosisM());
-        update.setDrugQ(update.getDrugQ());
+    public Response changePlanByProfessor(@Valid @RequestBody DiagnosisPlanWithBLOBs update,
+                                          @Valid @RequestBody OtherTime otherTime,
+                                          BindingResult bindingResult) throws ParseException {
+        if (bindingResult.hasErrors()) {
+            Response response = Responses.errorResponse("诊疗实施档案更新(专家页面)失败");
+            return response;
+        }else {
+            Date diagnosisT = new Date();
+            java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
+            if (!otherTime.getS_diagnosisT().isEmpty()){
+                diagnosisT =  formatter.parse(otherTime.getS_diagnosisT());
+            }
+            update.setGmtModified(new Date());
+            update.setDiagnosisT(diagnosisT);
+            diagnosisPlanService.changePlanByProfessor(update);
 
-        diagnosisPlanService.changePlanByProfessor(update);
-        DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(update.getId());
-        Response response = Responses.successResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("diagnosis_plan",selectById);
-        response.setData(data);
-        return response;
+            DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(update.getId());
+            Response response = Responses.successResponse();
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("diagnosis_plan",selectById);
+            response.setData(data);
+            return response;
+        }
     }
 
 //    监督者使用按主键修改的接口：/diagnosisUpdateBySupervisor
@@ -146,19 +132,22 @@ public class DiagnosisResource {
     }
     @ResponseBody
     @RequestMapping(value = "/diagnosisUpdateBySupervisor/show",method = RequestMethod.PUT)
-    public Response changePlanBySupervisor(@Valid DiagnosisPlanWithBLOBs update){
-        update.setId(update.getId());
-        update.setGmtSupervised(new Date());
-        update.setSupervisor(update.getSupervisor());
-        update.setIsPass1(update.getIsPass1());
+    public Response changePlanBySupervisor(@Valid @RequestBody DiagnosisPlanWithBLOBs update,
+                                           BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            Response response = Responses.errorResponse("诊疗实施档案更新(监督页面)失败");
+            return response;
+        }else {
+            update.setGmtSupervised(new Date());
+            diagnosisPlanService.changePlanByProfessor(update);
 
-        diagnosisPlanService.changePlanBySupervisor(update);
-        DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(update.getId());
-        Response response = Responses.successResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("diagnosis_plan",selectById);
-        response.setData(data);
-        return response;
+            DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(update.getId());
+            Response response = Responses.successResponse();
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("diagnosis_plan",selectById);
+            response.setData(data);
+            return response;
+        }
     }
 
 //    按主键查询的接口：/diagnosisSelectById
