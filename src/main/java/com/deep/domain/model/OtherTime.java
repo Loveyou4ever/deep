@@ -51,7 +51,27 @@ public class OtherTime implements Serializable {
 
     private String s_nutritionT2;
 
+    private int size;
+
+    private int page;
+
     private static final long serialVersionUID = 1L;
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
 
     public String getS_breedingT() {
         return s_breedingT;

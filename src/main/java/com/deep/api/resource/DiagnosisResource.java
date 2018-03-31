@@ -112,7 +112,7 @@ public class DiagnosisResource {
             }
             update.setGmtModified(new Date());
             update.setDiagnosisT(diagnosisT);
-            diagnosisPlanService.changePlanByProfessor(update);
+            diagnosisPlanService.changePlanSelective(update);
 
             DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(update.getId());
             Response response = Responses.successResponse();
@@ -139,7 +139,7 @@ public class DiagnosisResource {
             return response;
         }else {
             update.setGmtSupervised(new Date());
-            diagnosisPlanService.changePlanByProfessor(update);
+            diagnosisPlanService.changePlanSelective(update);
 
             DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(update.getId());
             Response response = Responses.successResponse();
