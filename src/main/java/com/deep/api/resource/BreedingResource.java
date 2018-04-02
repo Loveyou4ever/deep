@@ -112,9 +112,9 @@ public class BreedingResource {
         }
     }
 
-//    专家使用按主键修改的接口：/breedingUpdateByOperator
-//    专家使用按主键修改的方法名：changePlanByOperator()
-//    专家使用接收参数：整个表单类型
+//    操作员使用按主键修改的接口：/breedingUpdateByOperator
+//    操作员使用按主键修改的方法名：changePlanByOperator()
+//    操作员使用接收参数：整个表单信息（整型id必填，各参数选填）
     @RequestMapping(value = "/breedingUpdateByOperator",method = RequestMethod.GET)
     public String changePlanByOperator(){
         return "BreedingUpdateByOperator";
@@ -160,9 +160,9 @@ public class BreedingResource {
         }
     }
 
-//    监督者使用按主键修改的接口：/breedingUpdateByProfessor
-//    监督者使用按主键修改的方法名：changePlanByProfessor()
-//    监督者使用接收参数：整个表单信息（整型id必填，各参数选填）
+//    专家使用按主键修改的接口：/breedingUpdateByProfessor
+//    专家使用按主键修改的方法名：changePlanByProfessor()
+//    专家使用接收参数：整个表单信息（整型id必填，各参数选填）
     @RequestMapping(value = "/breedingUpdateByProfessor",method = RequestMethod.GET)
     public String changePlanByProfessor(){
         return "BreedingUpdateBySupervisor";
@@ -223,14 +223,20 @@ public class BreedingResource {
     }
     @ResponseBody
     @RequestMapping(value = "/breedingSelectById/show",method = RequestMethod.GET)
-    public Response findPlanById(@Valid BreedingPlan breedingPlan){
-        //查询语句的写法：一定要在声明对象时把值直接赋进去
-        BreedingPlan selectById = breedingPlanService.findPlanById(breedingPlan.getId());
-        Response response = Responses.successResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("breeding_plan",selectById);
-        response.setData(data);
-        return response;
+    public Response findPlanById(@Valid BreedingPlan breedingPlan,
+                                 BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            Response response = Responses.errorResponse("育种实施档案(根据条件)查询失败");
+            return response;
+        }else {
+            //查询语句的写法：一定要在声明对象时把值直接赋进去
+            BreedingPlan selectById = breedingPlanService.findPlanById(breedingPlan.getId());
+            Response response = Responses.successResponse();
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("breeding_plan",selectById);
+            response.setData(data);
+            return response;
+        }
     }
 
 //    按条件查询接口：/breedingSelective

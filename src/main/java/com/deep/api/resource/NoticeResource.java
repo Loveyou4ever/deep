@@ -1,5 +1,6 @@
 package com.deep.api.resource;
 
+import com.deep.api.Utils.FileUtil;
 import com.deep.api.response.Response;
 import com.deep.api.response.Responses;
 import com.deep.domain.model.NoticePlan;
@@ -120,7 +121,8 @@ public class NoticeResource {
     }
     @ResponseBody
     @RequestMapping(value = "/noticeUpdate/show",method = RequestMethod.POST)
-    public Response changePlan(@Valid NoticePlan update,HttpServletRequest request){
+    public Response changePlan(@Valid NoticePlan update,
+                               HttpServletRequest request){
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         MultipartFile file = files.get(0);
         String filename = file.getOriginalFilename();
@@ -258,19 +260,45 @@ public class NoticeResource {
     }
     @ResponseBody
     @RequestMapping(value = "/upload/show",method = RequestMethod.POST)
-    public Response uploadFile(@RequestBody NoticePlan noticePlan,
-                               HttpServletRequest request){
+    public Response uploadFile(HttpServletRequest request){
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         String filepath = request.getSession().getServletContext().getContextPath()+"../picture/rich_text_format";
         List<String> path = new ArrayList<>();
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
             String filename = file.getOriginalFilename();
+            try {
+                String Header = FileUtil.getFileHeader(file);
+                if (!Header.equals("FFD8FF")
+                        && !Header.equals("89504E47")
+                        && !Header.equals("47494638")
+                        && !Header.equals("49492A00")
+                        && !Header.equals("424D")
+                        && !Header.equals("57415645")
+                        && !Header.equals("41564920")
+                        && !Header.equals("2E7261FD")
+                        && !Header.equals("2E524D46")
+                        && !Header.equals("000001BA")
+                        && !Header.equals("6D6F6F76")
+                        && !Header.equals("3026B2758E66CF11")
+                        && !Header.equals("4D546864")
+                        && !Header.equals("00000020")
+                        && !Header.equals("FFD8FFE0")) {
+                    throw new Exception("文件格式错误！");
+                }
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                Response response = Responses.errorResponse(e.getMessage());
+                return response;
+            }
             if (!file.isEmpty()) {
                 try {
                     noticePlanService.uploadFile(file.getBytes(), filepath, filename);
+                    throw new Exception("文件上传错误，请重新上传！");
                 } catch (Exception e) {
-                    // TODO: handle exception
+                    System.out.println(e.getMessage());
+                    Response response = Responses.errorResponse(e.getMessage());
+                    return response;
                 }
             }
             path.add(filepath+filename);
