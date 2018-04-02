@@ -19,6 +19,8 @@ public class OtherTime implements Serializable {
 
     private String s_diagnosisT;
 
+    private String s_nutritionT;
+
     private String s_gmtCreate1;
 
     private String s_gmtCreate2;
@@ -111,6 +113,14 @@ public class OtherTime implements Serializable {
 
     public void setS_diagnosisT(String s_diagnosisT) {
         this.s_diagnosisT = s_diagnosisT;
+    }
+
+    public String getS_nutritionT() {
+        return s_nutritionT;
+    }
+
+    public void setS_nutritionT(String s_nutritionT) {
+        this.s_nutritionT = s_nutritionT;
     }
 
     public String getS_gmtCreate1() {

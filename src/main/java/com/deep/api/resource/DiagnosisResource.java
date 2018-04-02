@@ -79,14 +79,20 @@ public class DiagnosisResource {
     }
     @ResponseBody
     @RequestMapping(value = "/diagnosisDeleteById/show",method = RequestMethod.DELETE)
-    public Response dropPlan(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs){
-        DiagnosisPlanWithBLOBs delete = new DiagnosisPlanWithBLOBs();
-        diagnosisPlanService.dropPlan(diagnosisPlanWithBLOBs.getId());
-        Response response = Responses.successResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("diagnosis_plan",delete);
-        response.setData(data);
-        return response;
+    public Response dropPlan(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs,
+                             BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            Response response = Responses.errorResponse("育种实施档案删除失败");
+            return response;
+        }else {
+            DiagnosisPlanWithBLOBs delete = new DiagnosisPlanWithBLOBs();
+            diagnosisPlanService.dropPlan(diagnosisPlanWithBLOBs.getId());
+            Response response = Responses.successResponse();
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("diagnosis_plan",delete);
+            response.setData(data);
+            return response;
+        }
     }
 
 //    操作员使用按主键修改的接口：/diagnosisUpdateByOperator
@@ -99,8 +105,8 @@ public class DiagnosisResource {
     @ResponseBody
     @RequestMapping(value = "/diagnosisUpdateByOperator/show",method = RequestMethod.POST)
     public Response changePlanByOperator(@Valid DiagnosisPlanWithBLOBs operator,
-                                          @Valid OtherTime otherTime,
-                                          BindingResult bindingResult) throws ParseException {
+                                         @Valid OtherTime otherTime,
+                                         BindingResult bindingResult) throws ParseException {
         if (bindingResult.hasErrors()) {
             Response response = Responses.errorResponse("诊疗实施档案更新(操作员页面)失败");
             return response;
@@ -229,7 +235,7 @@ public class DiagnosisResource {
             if(diagnosisT1 != null && diagnosisT2 != null){
                 criteria.andDiagnosisTBetween(diagnosisT1,diagnosisT2);
             }
-            
+
             if(diagnosisPlanWithBLOBs.getId() != null && diagnosisPlanWithBLOBs.getId().toString() !=""){
                 criteria.andIdEqualTo(diagnosisPlanWithBLOBs.getId());
             }
