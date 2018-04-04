@@ -53,11 +53,21 @@ public class OtherTime implements Serializable {
 
     private String s_nutritionT2;
 
+    private String downloadPath;
+
     private int size;
 
     private int page;
 
     private static final long serialVersionUID = 1L;
+
+    public String getDownloadPath() {
+        return downloadPath;
+    }
+
+    public void setDownloadPath(String downloadPath) {
+        this.downloadPath = downloadPath;
+    }
 
     public int getSize() {
         return size;

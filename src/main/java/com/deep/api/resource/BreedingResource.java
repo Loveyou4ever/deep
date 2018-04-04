@@ -176,6 +176,9 @@ public class BreedingResource {
             return response;
         }else{
             professor.setGmtModified(new Date());
+            if (professor.getIsPass() == 1){
+                professor.setUpassReason("操作员已经修改档案并通过技术审核");
+            }
             breedingPlanService.changePlanSelective(professor);
 
             BreedingPlan selectById = breedingPlanService.findPlanById(professor.getId());
@@ -411,7 +414,7 @@ public class BreedingResource {
             if(breedingPlan.getSupervisor() != null && breedingPlan.getSupervisor() !=""){
                 criteria.andSupervisorEqualTo(breedingPlan.getSupervisor());
             }
-            criteria.andIsPassEqualTo(notPassed1);
+            criteria.andIsPass1EqualTo(notPassed1);
             List<BreedingPlan> select = breedingPlanService.findPlanSelective(breedingPlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();

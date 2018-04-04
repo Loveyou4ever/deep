@@ -8,7 +8,6 @@ import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.NutritionPlanService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -106,7 +105,7 @@ public class NurtritionResource {
         return "NutritionUpdateByOperator";
     }
     @ResponseBody
-    @RequestMapping(value = "/nutritionUpdateByOperator/show",method = RequestMethod.PUT)
+    @RequestMapping(value = "/nutritionUpdateByOperator/show",method = RequestMethod.POST)
     public Response changePlanByOperator(@Valid NutritionPlanWithBLOBs operator,
                                          @Valid OtherTime otherTime,
                                          BindingResult bindingResult) throws ParseException {
@@ -139,7 +138,7 @@ public class NurtritionResource {
         return "NutritionUpdateByProfessor";
     }
     @ResponseBody
-    @RequestMapping(value = "/nutritionUpdateByProfessor/show",method = RequestMethod.PUT)
+    @RequestMapping(value = "/nutritionUpdateByProfessor/show",method = RequestMethod.POST)
     public Response changePlanByProfessor(@Valid NutritionPlanWithBLOBs professor,
                                           BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
@@ -147,6 +146,9 @@ public class NurtritionResource {
             return response;
         }else {
             professor.setGmtModified(new Date());
+            if (professor.getIsPass() == 1){
+                professor.setUpassReason("操作员已经修改档案并通过技术审核");
+            }
             nutritionPlanService.changePlanSelective(professor);
 
             NutritionPlanWithBLOBs selectById = nutritionPlanService.findPlanById(professor.getId());
@@ -165,7 +167,7 @@ public class NurtritionResource {
         return "NutritionUpdateBySupervisor";
     }
     @ResponseBody
-    @RequestMapping(value = "/nutritionUpdateBySupervisor/show",method = RequestMethod.PUT)
+    @RequestMapping(value = "/nutritionUpdateBySupervisor/show",method = RequestMethod.POST)
     public Response changePlanBySupervisor(@Valid NutritionPlanWithBLOBs supervisor,
                                            BindingResult bindingResult){
         if (bindingResult.hasErrors()) {

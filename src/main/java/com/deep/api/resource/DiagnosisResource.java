@@ -144,6 +144,9 @@ public class DiagnosisResource {
             return response;
         }else {
             professor.setGmtModified(new Date());
+            if (professor.getIsPass() == 1){
+                professor.setUpassReason("操作员已经修改档案并通过技术审核");
+            }
             diagnosisPlanService.changePlanSelective(professor);
 
             DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(professor.getId());
@@ -343,7 +346,7 @@ public class DiagnosisResource {
             if(diagnosisPlanWithBLOBs.getSupervisor() != null && diagnosisPlanWithBLOBs.getSupervisor() !=""){
                 criteria.andSupervisorEqualTo(diagnosisPlanWithBLOBs.getSupervisor());
             }
-            criteria.andIsPassEqualTo(notPassed1);
+            criteria.andIsPass1EqualTo(notPassed1);
             List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
