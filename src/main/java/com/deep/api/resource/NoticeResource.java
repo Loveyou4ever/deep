@@ -8,7 +8,6 @@ import com.deep.domain.model.NoticePlanExample;
 import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.NoticePlanService;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
