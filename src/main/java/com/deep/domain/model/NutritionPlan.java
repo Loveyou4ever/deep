@@ -87,7 +87,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setBuilding(String building) {
-        this.building = building == null ? null : building.trim();
+        this.building = building;
     }
 
     public Date getNutritionT() {
@@ -97,14 +97,6 @@ public class NutritionPlan implements Serializable {
     public void setNutritionT(Date nutritionT) {
         this.nutritionT = nutritionT;
     }
-
-    /*public String getNutritionT() {
-        return nutritionT;
-    }
-
-    public void setNutritionT(String nutritionT) {
-        this.nutritionT = nutritionT == null ? null : nutritionT.trim();
-    }*/
 
     public Long getQuantity() {
         return quantity;
@@ -119,7 +111,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setAverage(String average) {
-        this.average = average == null ? null : average.trim();
+        this.average = average;
     }
 
     public String getPeriod() {
@@ -127,7 +119,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setPeriod(String period) {
-        this.period = period == null ? null : period.trim();
+        this.period = period;
     }
 
     public String getWater() {
@@ -135,7 +127,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setWater(String water) {
-        this.water = water == null ? null : water.trim();
+        this.water = water;
     }
 
     public String getOperator() {
@@ -143,7 +135,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setOperator(String operator) {
-        this.operator = operator == null ? null : operator.trim();
+        this.operator = operator;
     }
 
     public String getProfessor() {
@@ -151,7 +143,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setProfessor(String professor) {
-        this.professor = professor == null ? null : professor.trim();
+        this.professor = professor;
     }
 
     public String getSupervisor() {
@@ -159,7 +151,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setSupervisor(String supervisor) {
-        this.supervisor = supervisor == null ? null : supervisor.trim();
+        this.supervisor = supervisor;
     }
 
     public String getRemark() {
@@ -167,7 +159,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
+        this.remark = remark;
     }
 
     public Byte getIsPass() {
@@ -183,7 +175,7 @@ public class NutritionPlan implements Serializable {
     }
 
     public void setUpassReason(String upassReason) {
-        this.upassReason = upassReason == null ? null : upassReason.trim();
+        this.upassReason = upassReason;
     }
 
     public Byte getIsPass1() {
@@ -193,4 +185,5 @@ public class NutritionPlan implements Serializable {
     public void setIsPass1(Byte isPass1) {
         this.isPass1 = isPass1;
     }
+
 }

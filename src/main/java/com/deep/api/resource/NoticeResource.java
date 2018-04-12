@@ -1,6 +1,7 @@
 package com.deep.api.resource;
 
 import com.deep.api.Utils.FileUtil;
+import com.deep.api.request.NoticePlanModel;
 import com.deep.api.response.Response;
 import com.deep.api.response.Responses;
 import com.deep.domain.model.NoticePlan;
@@ -128,7 +129,7 @@ public class NoticeResource {
     }
     @ResponseBody
         @RequestMapping(value = "/noticeDeleteById/show",method = RequestMethod.DELETE)
-    public Response dropPlan(@Valid NoticePlan delete){
+    public Response dropPlan(@RequestBody @Valid NoticePlan delete){
         noticePlanService.dropPlan(delete.getId());
         Response response = Responses.successResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -249,13 +250,56 @@ public class NoticeResource {
         return "NoticeSelective";
     }
     @ResponseBody
-    @RequestMapping(value = "/noticeSelective/show",method = RequestMethod.GET)
-    public Response findPlanSelective(@Valid NoticePlan noticePlan,
-                                      @Valid OtherTime otherTime,
+    @RequestMapping(value = "/noticeSelective/show",method = RequestMethod.POST)
+    public Response findPlanSelective(@RequestBody @Valid NoticePlanModel planModel,
                                       BindingResult bindingResult) throws ParseException{
         if (bindingResult.hasErrors()) {
             return Responses.errorResponse("根据条件查询失败！");
         }else {
+            //将planModel部分变量拆分传递给对象insert
+            NoticePlan noticePlan = new NoticePlan();
+            noticePlan.setId(planModel.getId());
+            noticePlan.setGmtCreate(planModel.getGmtCreate());
+            noticePlan.setGmtModified(planModel.getGmtModified());
+            noticePlan.setProfessor(planModel.getProfessor());
+            noticePlan.setType(planModel.getType());
+            noticePlan.setTitle(planModel.getTitle());
+            noticePlan.setFilepath(planModel.getFilepath());
+            noticePlan.setSuffixname(planModel.getSuffixname());
+            noticePlan.setContent(planModel.getContent());
+            //将planModel部分变量拆分传递给对象otherTime
+            OtherTime otherTime = new OtherTime();
+            otherTime.setSearch_string(planModel.getSearch_string());
+            otherTime.setS_breedingT(planModel.getS_breedingT());
+            System.out.println(otherTime.getS_breedingT());
+            otherTime.setS_gestationT(planModel.getS_gestationT());
+            System.out.println(otherTime.getS_gestationT());
+            otherTime.setS_prenatalIT(planModel.getS_prenatalIT());
+            System.out.println(otherTime.getS_prenatalIT());
+            otherTime.setS_cubT(planModel.getS_cubT());
+            System.out.println(otherTime.getS_cubT());
+            otherTime.setS_diagnosisT(planModel.getS_diagnosisT());
+            otherTime.setS_nutritionT(planModel.getS_nutritionT());
+            otherTime.setS_gmtCreate1(planModel.getS_gmtCreate1());
+            otherTime.setS_gmtCreate2(planModel.getS_gmtCreate2());
+            otherTime.setS_gmtModified1(planModel.getS_gmtModified1());
+            otherTime.setS_gmtModified2(planModel.getS_gmtModified2());
+            otherTime.setS_breedingT1(planModel.getS_breedingT1());
+            otherTime.setS_breedingT2(planModel.getS_breedingT2());
+            otherTime.setS_prenatalIT1(planModel.getS_prenatalIT1());
+            otherTime.setS_prenatalIT2(planModel.getS_prenatalIT2());
+            otherTime.setS_gestationT1(planModel.getS_gestationT1());
+            otherTime.setS_gestationT2(planModel.getS_gestationT2());
+            otherTime.setS_cubT1(planModel.getS_cubT1());
+            otherTime.setS_cubT2(planModel.getS_cubT2());
+            otherTime.setS_diagnosisT1(planModel.getS_diagnosisT1());
+            otherTime.setS_diagnosisT2(planModel.getS_diagnosisT2());
+            otherTime.setS_nutritionT1(planModel.getS_nutritionT1());
+            otherTime.setS_nutritionT2(planModel.getS_nutritionT2());
+            otherTime.setDownloadPath(planModel.getDownloadPath());
+            otherTime.setPage(planModel.getPage());
+            otherTime.setSize(planModel.getSize());
+
             Date gmtCreate1 = null;
             Date gmtCreate2 = null;
             Date gmtModified1 = null;
@@ -303,8 +347,8 @@ public class NoticeResource {
         return "SearchInSite";
     }
     @ResponseBody
-    @RequestMapping(value = "/searchInSite/show",method = RequestMethod.GET)
-    public Response searchInSite(@Valid OtherTime otherTime,
+    @RequestMapping(value = "/searchInSite/show",method = RequestMethod.POST)
+    public Response searchInSite(@RequestBody @Valid OtherTime otherTime,
                                  BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return Responses.errorResponse("输入有误，站内搜索失败！");
@@ -381,8 +425,8 @@ public class NoticeResource {
         return "Download";
     }
     @ResponseBody
-    @RequestMapping(value = "/downloadFile",method = RequestMethod.GET)
-    public String downloadFile(@Valid OtherTime otherTime,
+    @RequestMapping(value = "/downloadFile",method = RequestMethod.POST)
+    public String downloadFile(@RequestBody @Valid OtherTime otherTime,
                                BindingResult bindingResult,
                                HttpServletResponse response){
         if (bindingResult.hasErrors()) {

@@ -22,14 +22,6 @@ public class NoticePlan implements Serializable {
 
     private String content;
 
-//    private String s_gmtCreate1;
-//
-//    private String s_gmtCreate2;
-//
-//    private String s_gmtModified1;
-//
-//    private String s_gmtModified2;
-
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
