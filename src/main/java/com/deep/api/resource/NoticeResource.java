@@ -7,6 +7,7 @@ import com.deep.domain.model.NoticePlan;
 import com.deep.domain.model.NoticePlanExample;
 import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.NoticePlanService;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -51,8 +52,7 @@ public class NoticeResource {
                             HttpServletRequest request,
                             BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("信息发布失败！");
-            return response;
+            return Responses.errorResponse("信息发布失败！");
         }else {
             List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
             if (files.size() !=0){
@@ -88,8 +88,7 @@ public class NoticeResource {
                     }
                 }catch (Exception e){
                     System.out.println(e.getMessage());
-                    Response response = Responses.errorResponse(e.getMessage());
-                    return response;
+                    return Responses.errorResponse(e.getMessage());
                 }
                 if (!file.isEmpty()) {
                     try {
@@ -151,8 +150,7 @@ public class NoticeResource {
                                HttpServletRequest request,
                                BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("信息修改失败！");
-            return response;
+            return Responses.errorResponse("信息修改失败！");
         }else {
             List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
             if (files.size() !=0){
@@ -188,8 +186,7 @@ public class NoticeResource {
                     }
                 }catch (Exception e){
                     System.out.println(e.getMessage());
-                    Response response = Responses.errorResponse(e.getMessage());
-                    return response;
+                    return Responses.errorResponse(e.getMessage());
                 }
                 if (!file.isEmpty()) {
                     try {
@@ -233,8 +230,7 @@ public class NoticeResource {
     public Response findPlanById(@Valid NoticePlan noticePlan,
                                  BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("根据主键查询失败！");
-            return response;
+            return Responses.errorResponse("根据主键查询失败！");
         }else {
             NoticePlan selectById = noticePlanService.findPlanById(noticePlan.getId());
             Response response = Responses.successResponse();
@@ -258,8 +254,7 @@ public class NoticeResource {
                                       @Valid OtherTime otherTime,
                                       BindingResult bindingResult) throws ParseException{
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("根据条件查询失败！");
-            return response;
+            return Responses.errorResponse("根据条件查询失败！");
         }else {
             Date gmtCreate1 = null;
             Date gmtCreate2 = null;
@@ -268,30 +263,30 @@ public class NoticeResource {
             java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
             NoticePlanExample noticePlanExample = new NoticePlanExample();
             NoticePlanExample.Criteria criteria = noticePlanExample.createCriteria();
-            if (otherTime.getS_gmtCreate1() != null && otherTime.getS_gmtCreate1() != "" && otherTime.getS_gmtCreate2() != null && otherTime.getS_gmtCreate2() != ""){
+            if (otherTime.getS_gmtCreate1() != null && !otherTime.getS_gmtCreate1().isEmpty() && otherTime.getS_gmtCreate2() != null && !otherTime.getS_gmtCreate2().isEmpty()){
                 gmtCreate1 =  formatter.parse(otherTime.getS_gmtCreate1());
                 gmtCreate2 =  formatter.parse(otherTime.getS_gmtCreate2());
             }
-            if (otherTime.getS_gmtModified1() != null && otherTime.getS_gmtModified1() != "" && otherTime.getS_gmtModified2() != null && otherTime.getS_gmtModified2() != ""){
+            if (otherTime.getS_gmtModified1() != null && !otherTime.getS_gmtModified1().isEmpty() && otherTime.getS_gmtModified2() != null && !otherTime.getS_gmtModified2().isEmpty()){
                 gmtModified1 =  formatter.parse(otherTime.getS_gmtModified1());
                 gmtModified2 =  formatter.parse(otherTime.getS_gmtModified2());
             }
-            if(noticePlan.getGmtCreate() != null && noticePlan.getGmtCreate().toString() !=""){
+            if(noticePlan.getGmtCreate() != null && !noticePlan.getGmtCreate().toString().isEmpty()){
                 criteria.andGmtCreateBetween(gmtCreate1,gmtCreate2);
             }
-            if(noticePlan.getGmtModified() != null && noticePlan.getGmtModified().toString() !=""){
+            if(noticePlan.getGmtModified() != null && !noticePlan.getGmtModified().toString().isEmpty()){
                 criteria.andGmtModifiedBetween(gmtModified1,gmtModified2);
             }
-            if(noticePlan.getId() != null && noticePlan.getId().toString() !=""){
+            if(noticePlan.getId() != null && !noticePlan.getId().toString().isEmpty()){
                 criteria.andIdEqualTo(noticePlan.getId());
             }
-            if(noticePlan.getProfessor() != null && noticePlan.getProfessor() !=""){
+            if(noticePlan.getProfessor() != null && !noticePlan.getProfessor().isEmpty()){
                 criteria.andProfessorEqualTo(noticePlan.getProfessor());
             }
-            if(noticePlan.getType() != null && noticePlan.getType().toString() !=""){
+            if(noticePlan.getType() != null && !noticePlan.getType().toString().isEmpty()){
                 criteria.andTypeEqualTo(noticePlan.getType());
             }
-            List<NoticePlan> selective = noticePlanService.findPlanSelective(noticePlanExample);
+            List<NoticePlan> selective = noticePlanService.findPlanSelective(noticePlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
             data.put("notice_plan",selective);
@@ -312,8 +307,7 @@ public class NoticeResource {
     public Response searchInSite(@Valid OtherTime otherTime,
                                  BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("输入有误，站内搜索失败！");
-            return response;
+            return Responses.errorResponse("输入有误，站内搜索失败！");
         }else {
             List<NoticePlan> selectInSite = noticePlanService.selectInSite(otherTime.getSearch_string());
             Response response = Responses.successResponse();
@@ -335,7 +329,7 @@ public class NoticeResource {
     @RequestMapping(value = "/upload/show",method = RequestMethod.POST)
     public Response uploadFile(HttpServletRequest request){
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-        String filepath = request.getSession().getServletContext().getContextPath()+"../picture/rich_text_format/";
+        String filepath = "../picture/rich_text_format/";
         List<String> path = new ArrayList<>();
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
@@ -361,8 +355,7 @@ public class NoticeResource {
                 }
             }catch (Exception e){
                 System.out.println(e.getMessage());
-                Response response = Responses.errorResponse(e.getMessage());
-                return response;
+                return Responses.errorResponse(e.getMessage());
             }
             if (!file.isEmpty()) {
                 try {

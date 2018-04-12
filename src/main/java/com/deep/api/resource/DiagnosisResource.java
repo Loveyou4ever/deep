@@ -6,6 +6,7 @@ import com.deep.domain.model.DiagnosisPlanExample;
 import com.deep.domain.model.DiagnosisPlanWithBLOBs;
 import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.DiagnosisPlanService;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -47,8 +48,7 @@ public class DiagnosisResource {
                             @Valid OtherTime otherTime,
                             BindingResult bindingResult) throws ParseException {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("诊疗实施档案录入失败");
-            return response;
+            return Responses.errorResponse("诊疗实施档案录入失败");
         }else {
             Byte zero = 0;
             Date diagnosisT = new Date();
@@ -82,8 +82,7 @@ public class DiagnosisResource {
     public Response dropPlan(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs,
                              BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("育种实施档案删除失败");
-            return response;
+            return Responses.errorResponse("育种实施档案删除失败");
         }else {
             DiagnosisPlanWithBLOBs delete = new DiagnosisPlanWithBLOBs();
             diagnosisPlanService.dropPlan(diagnosisPlanWithBLOBs.getId());
@@ -108,8 +107,7 @@ public class DiagnosisResource {
                                          @Valid OtherTime otherTime,
                                          BindingResult bindingResult) throws ParseException {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("诊疗实施档案更新(操作员页面)失败");
-            return response;
+            return Responses.errorResponse("诊疗实施档案更新(操作员页面)失败");
         }else {
             Date diagnosisT = null;
             java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
@@ -140,8 +138,7 @@ public class DiagnosisResource {
     public Response changePlanByProfessor(@Valid DiagnosisPlanWithBLOBs professor,
                                            BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("诊疗实施档案更新(专家页面)失败");
-            return response;
+            return Responses.errorResponse("诊疗实施档案更新(专家页面)失败");
         }else {
             professor.setGmtModified(new Date());
             if (professor.getIsPass() == 1){
@@ -170,8 +167,7 @@ public class DiagnosisResource {
     public Response changePlanBySupervisor(@Valid DiagnosisPlanWithBLOBs supervisor,
                                            BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("诊疗实施档案更新(监督页面)失败");
-            return response;
+            return Responses.errorResponse("诊疗实施档案更新(监督页面)失败");
         }else {
             supervisor.setGmtSupervised(new Date());
             diagnosisPlanService.changePlanSelective(supervisor);
@@ -197,8 +193,7 @@ public class DiagnosisResource {
     public Response findPlanById(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs,
                                  BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("育种实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("育种实施档案(根据条件)查询失败");
         } else {
             //查询语句的写法：一定要在声明对象时把值直接赋进去
             DiagnosisPlanWithBLOBs selectById = diagnosisPlanService.findPlanById(diagnosisPlanWithBLOBs.getId());
@@ -218,20 +213,19 @@ public class DiagnosisResource {
         return "DiagnosisSelective";
     }
     @ResponseBody
-    @RequestMapping(value = "/diagnosisSelective/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/diagnosisSelective/show",method = RequestMethod.POST)
     public Response findPlanSelective(@Valid DiagnosisPlanWithBLOBs diagnosisPlanWithBLOBs,
                                       @Valid OtherTime otherTime,
                                       BindingResult bindingResult) throws ParseException {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("诊疗实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("诊疗实施档案(根据条件)查询失败");
         }else {
             Date diagnosisT1 = null;
             Date diagnosisT2 = null;
             java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
             DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
             DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
-            if (otherTime.getS_diagnosisT1() != null && otherTime.getS_diagnosisT1() != "" && otherTime.getS_diagnosisT2() != null && otherTime.getS_diagnosisT2() != ""){
+            if (otherTime.getS_diagnosisT1() != null && !otherTime.getS_diagnosisT1().isEmpty()&& otherTime.getS_diagnosisT2() != null && !otherTime.getS_diagnosisT2().isEmpty()){
                 diagnosisT1 =  formatter.parse(otherTime.getS_diagnosisT1());
                 diagnosisT2 =  formatter.parse(otherTime.getS_diagnosisT2());
             }
@@ -239,40 +233,40 @@ public class DiagnosisResource {
                 criteria.andDiagnosisTBetween(diagnosisT1,diagnosisT2);
             }
 
-            if(diagnosisPlanWithBLOBs.getId() != null && diagnosisPlanWithBLOBs.getId().toString() !=""){
+            if(diagnosisPlanWithBLOBs.getId() != null && !diagnosisPlanWithBLOBs.getId().toString().isEmpty()){
                 criteria.andIdEqualTo(diagnosisPlanWithBLOBs.getId());
             }
-            if(diagnosisPlanWithBLOBs.getFactoryNum() != null && diagnosisPlanWithBLOBs.getFactoryNum().toString() !=""){
+            if(diagnosisPlanWithBLOBs.getFactoryNum() != null && !diagnosisPlanWithBLOBs.getFactoryNum().toString().isEmpty()){
                 criteria.andFactoryNumEqualTo(diagnosisPlanWithBLOBs.getFactoryNum());
             }
-            if(diagnosisPlanWithBLOBs.getBuilding() != null && diagnosisPlanWithBLOBs.getBuilding() !=""){
+            if(diagnosisPlanWithBLOBs.getBuilding() != null && !diagnosisPlanWithBLOBs.getBuilding().isEmpty()){
                 criteria.andBuildingEqualTo(diagnosisPlanWithBLOBs.getBuilding());
             }
-            if(diagnosisPlanWithBLOBs.getEtB() != null && diagnosisPlanWithBLOBs.getEtB() !=""){
+            if(diagnosisPlanWithBLOBs.getEtB() != null && !diagnosisPlanWithBLOBs.getEtB().isEmpty()){
                 criteria.andEtBEqualTo(diagnosisPlanWithBLOBs.getEtB());
             }
-            if(diagnosisPlanWithBLOBs.getOperator() != null && diagnosisPlanWithBLOBs.getOperator() !=""){
+            if(diagnosisPlanWithBLOBs.getOperator() != null && !diagnosisPlanWithBLOBs.getOperator().isEmpty()){
                 criteria.andOperatorEqualTo(diagnosisPlanWithBLOBs.getOperator());
             }
-            if(diagnosisPlanWithBLOBs.getProfessor() != null && diagnosisPlanWithBLOBs.getProfessor() !=""){
+            if(diagnosisPlanWithBLOBs.getProfessor() != null && !diagnosisPlanWithBLOBs.getProfessor().isEmpty()){
                 criteria.andProfessorEqualTo(diagnosisPlanWithBLOBs.getProfessor());
             }
-            if(diagnosisPlanWithBLOBs.getSupervisor() != null && diagnosisPlanWithBLOBs.getSupervisor() !=""){
+            if(diagnosisPlanWithBLOBs.getSupervisor() != null && !diagnosisPlanWithBLOBs.getSupervisor().isEmpty()){
                 criteria.andSupervisorEqualTo(diagnosisPlanWithBLOBs.getSupervisor());
             }
-            if(diagnosisPlanWithBLOBs.getRemark() != null && diagnosisPlanWithBLOBs.getRemark() !=""){
+            if(diagnosisPlanWithBLOBs.getRemark() != null && !diagnosisPlanWithBLOBs.getRemark().isEmpty()){
                 criteria.andRemarkLike(diagnosisPlanWithBLOBs.getRemark());
             }
-            if(diagnosisPlanWithBLOBs.getIsPass() != null && diagnosisPlanWithBLOBs.getIsPass().toString() !=""){
+            if(diagnosisPlanWithBLOBs.getIsPass() != null && !diagnosisPlanWithBLOBs.getIsPass().toString().isEmpty()){
                 criteria.andIsPassEqualTo(diagnosisPlanWithBLOBs.getIsPass());
             }
-            if(diagnosisPlanWithBLOBs.getUpassReason() != null && diagnosisPlanWithBLOBs.getUpassReason() !=""){
+            if(diagnosisPlanWithBLOBs.getUpassReason() != null && !diagnosisPlanWithBLOBs.getUpassReason().isEmpty()){
                 criteria.andUpassReasonLike(diagnosisPlanWithBLOBs.getUpassReason());
             }
-            if(diagnosisPlanWithBLOBs.getIsPass1() != null && diagnosisPlanWithBLOBs.getIsPass1().toString() !=""){
+            if(diagnosisPlanWithBLOBs.getIsPass1() != null && !diagnosisPlanWithBLOBs.getIsPass1().toString().isEmpty()){
                 criteria.andIsPassEqualTo(diagnosisPlanWithBLOBs.getIsPass1());
             }
-            List<DiagnosisPlanWithBLOBs> selective = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
+            List<DiagnosisPlanWithBLOBs> selective = diagnosisPlanService.findPlanSelective(diagnosisPlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
             data.put("diagnosis_plan",selective);
@@ -294,24 +288,23 @@ public class DiagnosisResource {
                                         @Valid OtherTime otherTime,
                                         BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("育种实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("育种实施档案(根据条件)查询失败");
         }else {
             Byte notPassed = 0;
             DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
             DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
 
-            if(diagnosisPlanWithBLOBs.getId() != null && diagnosisPlanWithBLOBs.getId().toString() !=""){
+            if(diagnosisPlanWithBLOBs.getId() != null && !diagnosisPlanWithBLOBs.getId().toString().isEmpty()){
                 criteria.andIdEqualTo(diagnosisPlanWithBLOBs.getId());
             }
-            if(diagnosisPlanWithBLOBs.getProfessor() != null && diagnosisPlanWithBLOBs.getProfessor() !=""){
+            if(diagnosisPlanWithBLOBs.getProfessor() != null && !diagnosisPlanWithBLOBs.getProfessor().isEmpty()){
                 criteria.andProfessorEqualTo(diagnosisPlanWithBLOBs.getProfessor());
             }
-            if(diagnosisPlanWithBLOBs.getUpassReason() != null && diagnosisPlanWithBLOBs.getUpassReason() !=""){
+            if(diagnosisPlanWithBLOBs.getUpassReason() != null && !diagnosisPlanWithBLOBs.getUpassReason().isEmpty()){
                 criteria.andUpassReasonLike(diagnosisPlanWithBLOBs.getUpassReason());
             }
             criteria.andIsPassEqualTo(notPassed);
-            List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
+            List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
             data.put("diagnosis_plan",select);
@@ -333,21 +326,20 @@ public class DiagnosisResource {
                                                @Valid OtherTime otherTime,
                                                BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("育种实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("育种实施档案(根据条件)查询失败");
         }else {
             Byte notPassed1 = 0;
             DiagnosisPlanExample diagnosisPlanExample = new DiagnosisPlanExample();
             DiagnosisPlanExample.Criteria criteria = diagnosisPlanExample.createCriteria();
 
-            if(diagnosisPlanWithBLOBs.getId() != null && diagnosisPlanWithBLOBs.getId().toString() !=""){
+            if(diagnosisPlanWithBLOBs.getId() != null && !diagnosisPlanWithBLOBs.getId().toString().isEmpty()){
                 criteria.andIdEqualTo(diagnosisPlanWithBLOBs.getId());
             }
-            if(diagnosisPlanWithBLOBs.getSupervisor() != null && diagnosisPlanWithBLOBs.getSupervisor() !=""){
+            if(diagnosisPlanWithBLOBs.getSupervisor() != null && !diagnosisPlanWithBLOBs.getSupervisor().isEmpty()){
                 criteria.andSupervisorEqualTo(diagnosisPlanWithBLOBs.getSupervisor());
             }
             criteria.andIsPass1EqualTo(notPassed1);
-            List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample);
+            List<DiagnosisPlanWithBLOBs> select = diagnosisPlanService.findPlanSelective(diagnosisPlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
             data.put("diagnosis_plan",select);

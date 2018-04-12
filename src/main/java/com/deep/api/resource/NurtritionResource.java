@@ -6,6 +6,7 @@ import com.deep.domain.model.NutritionPlanExample;
 import com.deep.domain.model.NutritionPlanWithBLOBs;
 import com.deep.domain.model.OtherTime;
 import com.deep.domain.service.NutritionPlanService;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +51,7 @@ public class NurtritionResource {
                             @Valid OtherTime otherTime,
                             BindingResult bindingResult) throws ParseException {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案录入失败");
-            return response;
+            return Responses.errorResponse("营养实施档案录入失败");
         }
         Date nutritionT = new Date();
         Byte zero = 0;
@@ -84,8 +84,7 @@ public class NurtritionResource {
     public Response dropPlan(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs,
                              BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案删除失败");
-            return response;
+            return Responses.errorResponse("营养实施档案删除失败");
         }else {
             NutritionPlanWithBLOBs delete = new NutritionPlanWithBLOBs();
             nutritionPlanService.dropPlan(nutritionPlanWithBLOBs.getId());
@@ -110,8 +109,7 @@ public class NurtritionResource {
                                          @Valid OtherTime otherTime,
                                          BindingResult bindingResult) throws ParseException {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案更新(操作员页面)失败");
-            return response;
+            return Responses.errorResponse("营养实施档案更新(操作员页面)失败");
         }else {
             Date nutritionT = null;
             java.text.SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:SS");
@@ -142,8 +140,7 @@ public class NurtritionResource {
     public Response changePlanByProfessor(@Valid NutritionPlanWithBLOBs professor,
                                           BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案更新(专家页面)失败");
-            return response;
+            return Responses.errorResponse("营养实施档案更新(专家页面)失败");
         }else {
             professor.setGmtModified(new Date());
             if (professor.getIsPass() == 1){
@@ -171,8 +168,7 @@ public class NurtritionResource {
     public Response changePlanBySupervisor(@Valid NutritionPlanWithBLOBs supervisor,
                                            BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案更新(监督页面)失败");
-            return response;
+            return Responses.errorResponse("营养实施档案更新(监督页面)失败");
         }else {
             supervisor.setGmtSupervised(new Date());
             nutritionPlanService.changePlanSelective(supervisor);
@@ -198,8 +194,7 @@ public class NurtritionResource {
     public Response findPlanById(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs,
                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("营养实施档案(根据条件)查询失败");
         } else {
             //查询语句的写法：一定要在声明对象时把值直接赋进去
             NutritionPlanWithBLOBs selectById = nutritionPlanService.findPlanById(nutritionPlanWithBLOBs.getId());
@@ -219,13 +214,12 @@ public class NurtritionResource {
         return "NutritionSelective";
     }
     @ResponseBody
-    @RequestMapping(value = "/nutritionSelective/show",method = RequestMethod.GET)
+    @RequestMapping(value = "/nutritionSelective/show",method = RequestMethod.POST)
     public Response findPlanSelective(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs,
                                       @Valid OtherTime otherTime,
                                       BindingResult bindingResult) throws ParseException {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("营养实施档案(根据条件)查询失败");
         }else {
             Date nutritionT1 = null;
             Date nutritionT2 = null;
@@ -233,53 +227,53 @@ public class NurtritionResource {
             NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
             NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
 
-            if (otherTime.getS_nutritionT1() != null && otherTime.getS_nutritionT1() != "" && otherTime.getS_nutritionT2() != null && otherTime.getS_nutritionT2() != ""){
+            if (otherTime.getS_nutritionT1() != null && !otherTime.getS_nutritionT1().isEmpty() && otherTime.getS_nutritionT2() != null && !otherTime.getS_nutritionT2().isEmpty()){
                 nutritionT1 =  formatter.parse(otherTime.getS_nutritionT1());
                 nutritionT2 =  formatter.parse(otherTime.getS_nutritionT2());
             }
             if(nutritionT1 != null && nutritionT2 != null){
                 criteria.andNutritionTBetween(nutritionT1,nutritionT2);
             }
-            if(nutritionPlanWithBLOBs.getId() != null && nutritionPlanWithBLOBs.getId().toString() !=""){
+            if(nutritionPlanWithBLOBs.getId() != null && !nutritionPlanWithBLOBs.getId().toString().isEmpty()){
                 criteria.andIdEqualTo(nutritionPlanWithBLOBs.getId());
             }
-            if(nutritionPlanWithBLOBs.getFactoryNum() != null && nutritionPlanWithBLOBs.getFactoryNum().toString() !=""){
+            if(nutritionPlanWithBLOBs.getFactoryNum() != null && !nutritionPlanWithBLOBs.getFactoryNum().toString().isEmpty()){
                 criteria.andFactoryNumEqualTo(nutritionPlanWithBLOBs.getFactoryNum());
             }
-            if(nutritionPlanWithBLOBs.getBuilding() != null && nutritionPlanWithBLOBs.getBuilding() !=""){
+            if(nutritionPlanWithBLOBs.getBuilding() != null && !nutritionPlanWithBLOBs.getBuilding().isEmpty()){
                 criteria.andBuildingEqualTo(nutritionPlanWithBLOBs.getBuilding());
             }
-            if(nutritionPlanWithBLOBs.getQuantity() != null && nutritionPlanWithBLOBs.getQuantity().toString() !=""){
+            if(nutritionPlanWithBLOBs.getQuantity() != null && !nutritionPlanWithBLOBs.getQuantity().toString().isEmpty()){
                 criteria.andQuantityEqualTo(nutritionPlanWithBLOBs.getQuantity());
             }
-            if(nutritionPlanWithBLOBs.getAverage() != null && nutritionPlanWithBLOBs.getAverage() !=""){
+            if(nutritionPlanWithBLOBs.getAverage() != null && !nutritionPlanWithBLOBs.getAverage().isEmpty()){
                 criteria.andAverageGreaterThanOrEqualTo(nutritionPlanWithBLOBs.getAverage());
             }
-            if (nutritionPlanWithBLOBs.getPeriod()!= null && nutritionPlanWithBLOBs.getPeriod() !=""){
+            if (nutritionPlanWithBLOBs.getPeriod()!= null && !nutritionPlanWithBLOBs.getPeriod().isEmpty()){
                 criteria.andPeriodEqualTo(nutritionPlanWithBLOBs.getPeriod());
             }
-            if (nutritionPlanWithBLOBs.getWater()!= null && nutritionPlanWithBLOBs.getWater() !=""){
+            if (nutritionPlanWithBLOBs.getWater()!= null && !nutritionPlanWithBLOBs.getWater().isEmpty()){
                 criteria.andWaterEqualTo(nutritionPlanWithBLOBs.getWater());
             }
-            if(nutritionPlanWithBLOBs.getOperator() != null && nutritionPlanWithBLOBs.getOperator() !=""){
+            if(nutritionPlanWithBLOBs.getOperator() != null && !nutritionPlanWithBLOBs.getOperator().isEmpty()){
                 criteria.andOperatorEqualTo(nutritionPlanWithBLOBs.getOperator());
             }
-            if(nutritionPlanWithBLOBs.getProfessor() != null && nutritionPlanWithBLOBs.getProfessor() !=""){
+            if(nutritionPlanWithBLOBs.getProfessor() != null && !nutritionPlanWithBLOBs.getProfessor().isEmpty()){
                 criteria.andProfessorEqualTo(nutritionPlanWithBLOBs.getProfessor());
             }
-            if(nutritionPlanWithBLOBs.getSupervisor() != null && nutritionPlanWithBLOBs.getSupervisor() !=""){
+            if(nutritionPlanWithBLOBs.getSupervisor() != null && !nutritionPlanWithBLOBs.getSupervisor().isEmpty()){
                 criteria.andSupervisorEqualTo(nutritionPlanWithBLOBs.getSupervisor());
             }
-            if(nutritionPlanWithBLOBs.getIsPass() != null && nutritionPlanWithBLOBs.getIsPass().toString() !=""){
+            if(nutritionPlanWithBLOBs.getIsPass() != null && !nutritionPlanWithBLOBs.getIsPass().toString().isEmpty()){
                 criteria.andIsPassEqualTo(nutritionPlanWithBLOBs.getIsPass());
             }
-            if(nutritionPlanWithBLOBs.getUpassReason() != null && nutritionPlanWithBLOBs.getUpassReason() !=""){
+            if(nutritionPlanWithBLOBs.getUpassReason() != null && !nutritionPlanWithBLOBs.getUpassReason().isEmpty()){
                 criteria.andUpassReasonLike(nutritionPlanWithBLOBs.getUpassReason());
             }
-            if(nutritionPlanWithBLOBs.getIsPass1() != null && nutritionPlanWithBLOBs.getIsPass1().toString() !=""){
+            if(nutritionPlanWithBLOBs.getIsPass1() != null && !nutritionPlanWithBLOBs.getIsPass1().toString().isEmpty()){
                 criteria.andIsPass1EqualTo(nutritionPlanWithBLOBs.getIsPass1());
             }
-            List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample);
+            List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
             data.put("nutrition_plan",select);
@@ -301,24 +295,23 @@ public class NurtritionResource {
                                               @Valid OtherTime otherTime,
                                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("营养实施档案(根据条件)查询失败");
         }else {
             Byte notPassed = 0;
             NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
             NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
 
-            if(nutritionPlanWithBLOBs.getId() != null && nutritionPlanWithBLOBs.getId().toString() !=""){
+            if(nutritionPlanWithBLOBs.getId() != null && !nutritionPlanWithBLOBs.getId().toString().isEmpty()){
                 criteria.andIdEqualTo(nutritionPlanWithBLOBs.getId());
             }
-            if(nutritionPlanWithBLOBs.getProfessor() != null && nutritionPlanWithBLOBs.getProfessor() !=""){
+            if(nutritionPlanWithBLOBs.getProfessor() != null && !nutritionPlanWithBLOBs.getProfessor().isEmpty()){
                 criteria.andProfessorEqualTo(nutritionPlanWithBLOBs.getProfessor());
             }
-            if(nutritionPlanWithBLOBs.getUpassReason() != null && nutritionPlanWithBLOBs.getUpassReason() !=""){
+            if(nutritionPlanWithBLOBs.getUpassReason() != null && !nutritionPlanWithBLOBs.getUpassReason().isEmpty()){
                 criteria.andUpassReasonLike(nutritionPlanWithBLOBs.getUpassReason());
             }
             criteria.andIsPassEqualTo(notPassed);
-            List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample);
+            List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
             data.put("nutrition_plan",select);
@@ -336,28 +329,23 @@ public class NurtritionResource {
     }
     @ResponseBody
     @RequestMapping(value = "/nutritionSelectBySupervisor/show",method = RequestMethod.GET)
-    public Response findPlanSelectBySupervisor(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs,BindingResult bindingResult) {
-        /*if(result.hasErrors()){
-            List<ObjectError> ls = result.getAllErrors();
-            for (int i = 0; i < ls.size(); i++) {
-                System.out.println("error:"+ls.get(i));
-            }
-        }else {}*/
+    public Response findPlanSelectBySupervisor(@Valid NutritionPlanWithBLOBs nutritionPlanWithBLOBs,
+                                               @Valid OtherTime otherTime,
+                                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            Response response = Responses.errorResponse("营养实施档案(根据条件)查询失败");
-            return response;
+            return Responses.errorResponse("营养实施档案(根据条件)查询失败");
         }else {
             Byte notPassed1 = 0;
             NutritionPlanExample nutritionPlanExample = new NutritionPlanExample();
             NutritionPlanExample.Criteria criteria = nutritionPlanExample.createCriteria();
-            if(nutritionPlanWithBLOBs.getId() != null && nutritionPlanWithBLOBs.getId().toString() !=""){
+            if(nutritionPlanWithBLOBs.getId() != null && !nutritionPlanWithBLOBs.getId().toString().isEmpty()){
                 criteria.andIdEqualTo(nutritionPlanWithBLOBs.getId());
             }
-            if(nutritionPlanWithBLOBs.getSupervisor() != null && nutritionPlanWithBLOBs.getSupervisor() !=""){
+            if(nutritionPlanWithBLOBs.getSupervisor() != null && !nutritionPlanWithBLOBs.getSupervisor().isEmpty()){
                 criteria.andSupervisorEqualTo(nutritionPlanWithBLOBs.getSupervisor());
             }
             criteria.andIsPass1EqualTo(notPassed1);
-            List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample);
+            List<NutritionPlanWithBLOBs> select = nutritionPlanService.findPlanSelective(nutritionPlanExample,new RowBounds(otherTime.getPage(),otherTime.getSize()));
             Response response = Responses.successResponse();
             HashMap<String, Object> data = new HashMap<>();
             data.put("nutrition_plan",select);
