@@ -256,6 +256,10 @@ public class NoticeResource {
         if (bindingResult.hasErrors()) {
             return Responses.errorResponse("根据条件查询失败！");
         }else {
+            //
+            if (planModel.getSize() == 0){
+                planModel.setSize(5);
+            }
             //将planModel部分变量拆分传递给对象insert
             NoticePlan noticePlan = new NoticePlan();
             noticePlan.setId(planModel.getId());
