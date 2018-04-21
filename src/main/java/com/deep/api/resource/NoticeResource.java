@@ -168,6 +168,7 @@ public class NoticeResource {
                 }
                 try {
                     String Header = FileUtil.getFileHeader(file);
+                    //不同的文件头名需要添加
                     if (!Header.equals("FFD8FF")
                             && !Header.equals("89504E47")
                             && !Header.equals("47494638")
@@ -275,15 +276,17 @@ public class NoticeResource {
             OtherTime otherTime = new OtherTime();
             otherTime.setSearch_string(planModel.getSearch_string());
             otherTime.setS_breedingT(planModel.getS_breedingT());
-            System.out.println(otherTime.getS_breedingT());
+            System.out.println("getS_breedingT"+otherTime.getS_breedingT());
             otherTime.setS_gestationT(planModel.getS_gestationT());
-            System.out.println(otherTime.getS_gestationT());
+            System.out.println("getS_gestationT"+otherTime.getS_gestationT());
             otherTime.setS_prenatalIT(planModel.getS_prenatalIT());
-            System.out.println(otherTime.getS_prenatalIT());
+            System.out.println("getS_prenatalIT"+otherTime.getS_prenatalIT());
             otherTime.setS_cubT(planModel.getS_cubT());
-            System.out.println(otherTime.getS_cubT());
+            System.out.println("getS_cubT"+otherTime.getS_cubT());
             otherTime.setS_diagnosisT(planModel.getS_diagnosisT());
+            System.out.println("getS_diagnosisT"+otherTime.getS_diagnosisT());
             otherTime.setS_nutritionT(planModel.getS_nutritionT());
+            System.out.println("getS_nutritionT"+otherTime.getS_nutritionT());
             otherTime.setS_gmtCreate1(planModel.getS_gmtCreate1());
             otherTime.setS_gmtCreate2(planModel.getS_gmtCreate2());
             otherTime.setS_gmtModified1(planModel.getS_gmtModified1());
